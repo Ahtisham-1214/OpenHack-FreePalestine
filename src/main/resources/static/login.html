@@ -166,9 +166,9 @@
 
   <form id="loginForm" novalidate>
     <div class="field">
-      <label for="email">Email</label>
-      <input type="email" id="email" placeholder="Enter your email" autocomplete="username" maxlength="254">
-      <div class="error" id="emailError"></div>
+      <label for="username">Username</label>
+      <input type="text" id="username" placeholder="Enter your username" autocomplete="username" maxlength="50">
+      <div class="error" id="usernameError"></div>
     </div>
 
     <div class="field">
@@ -253,6 +253,16 @@
       return '';
     },
 
+    // Username: letters + numbers only, must contain both
+    username(value) {
+      if (!value) return 'Username is required';
+      if (/\s/.test(value)) return 'Username must not contain spaces';
+      if (!/^[A-Za-z0-9]+$/.test(value)) return 'Username can only contain letters and numbers (no special characters)';
+      if (!/[A-Za-z]/.test(value)) return 'Username must include at least one letter';
+      if (!/[0-9]/.test(value)) return 'Username must include at least one number';
+      return '';
+    },
+
     // Login only needs to know a password was entered
     // (the server decides if it is correct)
     password(value) {
@@ -305,18 +315,18 @@
 
   /* ---------------- Login ---------------- */
   const loginForm  = document.getElementById('loginForm');
-  const emailInput = document.getElementById('email');
+  const usernameInput = document.getElementById('username');
   const pwdInput   = document.getElementById('password');
-  const emailError = document.getElementById('emailError');
+  const usernameError = document.getElementById('usernameError');
   const pwdError   = document.getElementById('passwordError');
   const loginMsg   = document.getElementById('loginMsg');
   const loginBtn   = document.getElementById('loginBtn');
 
-  const checkEmail    = () => showResult(emailInput, emailError, validate.email(emailInput.value.trim()));
+  const checkUsername = () => showResult(usernameInput, usernameError, validate.username(usernameInput.value.trim()));
   const checkPassword = () => showResult(pwdInput, pwdError, validate.password(pwdInput.value));
 
   bindToggle(document.getElementById('togglePwd'), pwdInput);
-  liveValidate(emailInput, checkEmail);
+  liveValidate(usernameInput, checkUsername);
   liveValidate(pwdInput, checkPassword);
 
   loginForm.addEventListener('submit', async (e) => {
@@ -325,11 +335,11 @@
     loginMsg.className = 'message';
 
     // Run both checks so every error shows at once
-    const emailOk = checkEmail();
-    const pwdOk   = checkPassword();
-    if (!emailOk || !pwdOk) return;
+    const usernameOk = checkUsername();
+    const pwdOk      = checkPassword();
+    if (!usernameOk || !pwdOk) return;
 
-    const email = emailInput.value.trim().toLowerCase();
+    const username = usernameInput.value.trim();
     const password = pwdInput.value;
 
     loginBtn.disabled = true;
@@ -341,7 +351,7 @@
       const res = await fetch('/api/login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, password })
+        body: JSON.stringify({ username, password })
       });
 
       if (res.ok) {
@@ -349,7 +359,7 @@
         loginMsg.classList.add('ok');
         // window.location.href = '/dashboard';
       } else {
-        loginMsg.textContent = 'Incorrect email or password';
+        loginMsg.textContent = 'Incorrect username or password';
         loginMsg.classList.add('fail');
       }
     } catch (err) {
@@ -389,7 +399,6 @@
 
   document.getElementById('forgotLink').addEventListener('click', () => {
     modal.classList.add('show');
-    resetEmail.value = emailInput.value;
     resetEmail.focus();
   });
 

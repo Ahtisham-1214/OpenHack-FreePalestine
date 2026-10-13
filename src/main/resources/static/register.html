@@ -134,15 +134,9 @@
 
   <form id="registerForm" novalidate>
     <div class="field">
-      <label for="name">Name</label>
-      <input type="text" id="name" placeholder="Enter your full name" autocomplete="name">
-      <div class="error" id="nameError"></div>
-    </div>
-
-    <div class="field">
-      <label for="email">Email</label>
-      <input type="email" id="email" placeholder="Enter your email" autocomplete="username">
-      <div class="error" id="emailError"></div>
+      <label for="username">Username</label>
+      <input type="text" id="username" placeholder="Choose a username" autocomplete="username" maxlength="50">
+      <div class="error" id="usernameError"></div>
     </div>
 
     <div class="field">
@@ -167,27 +161,14 @@
      VALIDATION RULES (all handled on the frontend)
      Each validator returns an error string, or '' if valid.
      ========================================================= */
-  const EMAIL_REGEX = /^[A-Za-z0-9._%+-]+@[A-Za-z0-9-]+(\.[A-Za-z0-9-]+)*\.[A-Za-z]{2,}$/;
-
   const validate = {
-    name(value) {
-      if (!value) return 'Name is required';
-      if (value.length < 2) return 'Name must be at least 2 characters';
-      if (value.length > 50) return 'Name must be 50 characters or fewer';
-      if (!/^[A-Za-z][A-Za-z .'-]*$/.test(value)) return 'Name can only contain letters, spaces, . \' and -';
-      return '';
-    },
-
-    email(value) {
-      if (!value) return 'Email is required';
-      if (/\s/.test(value)) return 'Email must not contain spaces';
-      if (value.length > 254) return 'Email is too long';
-      if (!value.includes('@')) return 'Email must contain "@"';
-      const [local] = value.split('@');
-      if (local.length > 64) return 'Part before "@" is too long';
-      if (value.includes('..')) return 'Email must not contain consecutive dots';
-      if (local.startsWith('.') || local.endsWith('.')) return 'Email must not start or end with a dot before "@"';
-      if (!EMAIL_REGEX.test(value)) return 'Enter a valid email address (e.g. name@example.com)';
+    // Username: letters + numbers only, must contain both
+    username(value) {
+      if (!value) return 'Username is required';
+      if (/\s/.test(value)) return 'Username must not contain spaces';
+      if (!/^[A-Za-z0-9]+$/.test(value)) return 'Username can only contain letters and numbers (no special characters)';
+      if (!/[A-Za-z]/.test(value)) return 'Username must include at least one letter';
+      if (!/[0-9]/.test(value)) return 'Username must include at least one number';
       return '';
     },
 
@@ -212,11 +193,9 @@
   }
 
   const form        = document.getElementById('registerForm');
-  const nameInput   = document.getElementById('name');
-  const emailInput  = document.getElementById('email');
+  const usernameInput = document.getElementById('username');
   const pwdInput    = document.getElementById('password');
-  const nameError   = document.getElementById('nameError');
-  const emailError  = document.getElementById('emailError');
+  const usernameError = document.getElementById('usernameError');
   const pwdError    = document.getElementById('passwordError');
   const registerMsg = document.getElementById('registerMsg');
   const registerBtn = document.getElementById('registerBtn');
@@ -229,12 +208,10 @@
     return !text;
   }
 
-  const checkName     = () => setError(nameInput, nameError, validate.name(nameInput.value.trim()));
-  const checkEmail    = () => setError(emailInput, emailError, validate.email(emailInput.value.trim()));
+  const checkUsername = () => setError(usernameInput, usernameError, validate.username(usernameInput.value.trim()));
   const checkPassword = () => setError(pwdInput, pwdError, validate.password(pwdInput.value));
 
-  liveValidate(nameInput, checkName);
-  liveValidate(emailInput, checkEmail);
+  liveValidate(usernameInput, checkUsername);
   liveValidate(pwdInput, checkPassword);
 
   // Show / hide password
@@ -250,13 +227,11 @@
     registerMsg.className = 'message';
 
     // Run all checks so every error shows at once
-    const nameOk  = checkName();
-    const emailOk = checkEmail();
-    const pwdOk   = checkPassword();
-    if (!nameOk || !emailOk || !pwdOk) return;
+    const usernameOk = checkUsername();
+    const pwdOk      = checkPassword();
+    if (!usernameOk || !pwdOk) return;
 
-    const name = nameInput.value.trim();
-    const email = emailInput.value.trim().toLowerCase();
+    const username = usernameInput.value.trim();
     const password = pwdInput.value;
 
     registerBtn.disabled = true;
@@ -268,7 +243,7 @@
       const res = await fetch('/api/register', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ name, email, password })
+        body: JSON.stringify({ username, password })
       });
 
       if (res.ok) {
@@ -276,7 +251,7 @@
         registerMsg.classList.add('ok');
         setTimeout(() => { window.location.href = 'login.html'; }, 1500);
       } else if (res.status === 409) {
-        registerMsg.textContent = 'An account with this email already exists';
+        registerMsg.textContent = 'This username is already taken';
         registerMsg.classList.add('fail');
       } else {
         registerMsg.textContent = 'Registration failed. Please try again.';
