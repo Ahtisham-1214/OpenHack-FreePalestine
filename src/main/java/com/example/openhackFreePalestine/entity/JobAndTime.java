@@ -12,8 +12,7 @@ public class JobAndTime {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Enumerated(EnumType.STRING)
-    private Job job;
+    private String job;
 
     private double time;
 
