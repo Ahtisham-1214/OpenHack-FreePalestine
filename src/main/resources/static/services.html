@@ -207,18 +207,36 @@
       try {
         const statusData = await apiRequest(`/services/status/${activeTokenId}`, { allowUnauthorized: true });
 
+        const cancelBtn = document.getElementById('cancelBtn');
+
         if (statusData.status && statusData.status !== 'WAITING') {
           const statusBadge = document.getElementById('trackerStatus');
           statusBadge.textContent = statusData.status;
-          statusBadge.className = statusData.status === 'SERVING'
-                  ? 'px-2.5 py-1 bg-emerald-100 text-emerald-800 text-xs font-semibold rounded-full'
-                  : 'px-2.5 py-1 bg-slate-200 text-slate-700 text-xs font-semibold rounded-full';
 
+          // Update badge styling based on state
+          // Update badge styling based on state
           if (statusData.status === 'SERVING') {
+            statusBadge.className = 'px-2.5 py-1 bg-emerald-100 text-emerald-800 text-xs font-semibold rounded-full';
             Toast.success("It's your turn now! Please approach the counter.", "Your Turn!");
+
+            // Keep cancel button visible while serving, in case they need to step away
+            if (cancelBtn) cancelBtn.style.display = 'block';
+
+          } else if (statusData.status === 'COMPLETED') {
+            statusBadge.className = 'px-2.5 py-1 bg-blue-100 text-blue-800 text-xs font-semibold rounded-full';
+            Toast.info("Your service has been completed. Thank you!", "Completed");
+
+            // Hide cancel button only after completion
+            if (cancelBtn) cancelBtn.style.display = 'none';
+            clearInterval(pollInterval);
+            return;
+
+          } else if (statusData.status === 'CANCELLED') {
+            statusBadge.className = 'px-2.5 py-1 bg-rose-100 text-rose-800 text-xs font-semibold rounded-full';
+            if (cancelBtn) cancelBtn.style.display = 'none';
+            clearInterval(pollInterval);
+            return;
           }
-          clearInterval(pollInterval);
-          return;
         }
 
         document.getElementById('trackerPosition').textContent = statusData.positionInQueue;

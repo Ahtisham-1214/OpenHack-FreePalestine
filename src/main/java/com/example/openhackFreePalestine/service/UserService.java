@@ -24,7 +24,7 @@ public class UserService {
     public User registerUser(UserRegistrationDto registrationDto) {
         // 1. Check if username is already taken
         if (userRepository.findByUsername(registrationDto.getUsername()).isPresent()) {
-            throw new RuntimeException("Username is already taken!");
+            throw new IllegalArgumentException("Username is already taken!");
         }
 
         // 2. Map DTO to Entity

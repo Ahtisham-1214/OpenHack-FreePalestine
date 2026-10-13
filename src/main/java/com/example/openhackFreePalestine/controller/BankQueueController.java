@@ -4,6 +4,7 @@ import com.example.openhackFreePalestine.dtos.ServiceRequestDto;
 import com.example.openhackFreePalestine.dtos.ServiceResponseDto;
 import com.example.openhackFreePalestine.entity.BankQueue;
 import com.example.openhackFreePalestine.entity.TokenStatus;
+import com.example.openhackFreePalestine.exception.ResourceNotFoundException;
 import com.example.openhackFreePalestine.repositories.BankQueueRepository;
 import com.example.openhackFreePalestine.service.BankQueueService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,6 +12,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.security.Principal;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
@@ -40,12 +42,21 @@ public class BankQueueController {
     @PatchMapping("/{id}/status")
     public ResponseEntity<?> updateTokenStatus(@PathVariable Long id, @RequestParam TokenStatus status) {
         BankQueue token = bankQueueRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Token not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Token not found"));
+
+        // Allow cancellation during WAITING or SERVING, but block if COMPLETED
+        if (status == TokenStatus.CANCELLED) {
+            if (token.getStatus() == TokenStatus.COMPLETED || token.getStatus() == TokenStatus.CANCELLED) {
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                        .body(Map.of("error", "Cannot cancel token. Service has already been completed."));
+            }
+        }
 
         token.setStatus(status);
         if (status == TokenStatus.COMPLETED) {
             token.setCompletedAt(LocalDateTime.now());
         }
+
         bankQueueRepository.save(token);
         return ResponseEntity.ok(Map.of("message", "Token status updated to " + status));
     }
@@ -75,7 +86,7 @@ public class BankQueueController {
     @GetMapping("/status/{tokenId}")
     public ResponseEntity<?> getTokenStatus(@PathVariable Long tokenId) {
         BankQueue userToken = bankQueueRepository.findById(tokenId)
-                .orElseThrow(() -> new RuntimeException("Token not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Token not found"));
 
         if (userToken.getStatus() != TokenStatus.WAITING) {
             return ResponseEntity.ok(Map.of("status", userToken.getStatus()));
@@ -84,7 +95,7 @@ public class BankQueueController {
         // Get the optimized queue order
         List<BankQueue> queue = bankQueueService.getOptimizedQueue();
 
-        int position = 0;
+        int position = -1;
         double estimatedWaitTime = 0.0;
         boolean found = false;
 
