@@ -3,6 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="icon" href="logo.png">
 <title>Bank Login</title>
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -17,26 +18,43 @@
     padding: 16px;
   }
 
+  /* Landscape card: logo on the left, form on the right */
   .card {
     background: #fff;
     width: 100%;
-    max-width: 400px;
+    max-width: 900px;
     border-radius: 14px;
-    padding: 36px 32px;
     box-shadow: 0 12px 40px rgba(0,0,0,.25);
+    display: flex;
+    overflow: hidden;
   }
 
-  .logo {
-    text-align: center;
-    font-size: 26px;
-    font-weight: 700;
-    color: #0b3d91;
-    margin-bottom: 6px;
+  .brand-side {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 32px;
+    background: #fff;
+    border-right: 1px solid #e6eaf0;
   }
+  .brand-side img {
+    width: 100%;
+    max-width: 340px;
+    height: auto;
+    object-fit: contain;
+  }
+
+  .form-side {
+    flex: 1;
+    padding: 36px 32px;
+  }
+
   .subtitle {
     text-align: center;
-    color: #666;
-    font-size: 14px;
+    color: #0b3d91;
+    font-size: 20px;
+    font-weight: 700;
     margin-bottom: 28px;
   }
 
@@ -133,6 +151,18 @@
     margin-top: 22px;
   }
 
+  /* Mobile: stack logo on top, form below */
+  @media (max-width: 720px) {
+    .card { flex-direction: column; max-width: 420px; }
+    .brand-side {
+      border-right: none;
+      border-bottom: 1px solid #e6eaf0;
+      padding: 24px;
+    }
+    .brand-side img { max-width: 200px; }
+    .form-side { padding: 28px 24px; }
+  }
+
   /* Forgot password modal */
   .overlay {
     position: fixed;
@@ -161,36 +191,41 @@
 <body>
 
 <div class="card">
-  <div class="logo">My Bank</div>
-  <div class="subtitle">Login to your account</div>
+  <div class="brand-side">
+    <img src="logo.png" alt="Free Palestine Bank">
+  </div>
 
-  <form id="loginForm" novalidate>
-    <div class="field">
-      <label for="username">Username</label>
-      <input type="text" id="username" placeholder="Enter your username" autocomplete="username" maxlength="50">
-      <div class="error" id="usernameError"></div>
-    </div>
+  <div class="form-side">
+    <div class="subtitle">Login to your account</div>
 
-    <div class="field">
-      <label for="password">Password</label>
-      <div class="input-wrap">
-        <input type="password" id="password" placeholder="Enter your password" autocomplete="current-password" maxlength="128">
-        <button type="button" class="toggle" id="togglePwd">Show</button>
+    <form id="loginForm" novalidate>
+      <div class="field">
+        <label for="username">Username</label>
+        <input type="text" id="username" placeholder="Enter your username" autocomplete="username" maxlength="50">
+        <div class="error" id="usernameError"></div>
       </div>
-      <div class="error" id="passwordError"></div>
-    </div>
 
-    <div class="row">
-      <label><input type="checkbox" id="remember"> Remember me</label>
-      <a id="forgotLink">Forgot password?</a>
-    </div>
+      <div class="field">
+        <label for="password">Password</label>
+        <div class="input-wrap">
+          <input type="password" id="password" placeholder="Enter your password" autocomplete="current-password" maxlength="128">
+          <button type="button" class="toggle" id="togglePwd">Show</button>
+        </div>
+        <div class="error" id="passwordError"></div>
+      </div>
 
-    <button type="submit" class="btn" id="loginBtn">Login</button>
-    <div class="message" id="loginMsg"></div>
-  </form>
+      <div class="row">
+        <label><input type="checkbox" id="remember"> Remember me</label>
+        <a id="forgotLink">Forgot password?</a>
+      </div>
 
-  <div class="switch">Don't have an account? <a href="register.html">Register</a></div>
-  <div class="secure">🔒 Your information is secure</div>
+      <button type="submit" class="btn" id="loginBtn">Login</button>
+      <div class="message" id="loginMsg"></div>
+    </form>
+
+    <div class="switch">Don't have an account? <a href="register.html">Register</a></div>
+    <div class="secure">🔒 Your information is secure</div>
+  </div>
 </div>
 
 <!-- Forgot Password Modal -->
