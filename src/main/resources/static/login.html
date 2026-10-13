@@ -232,6 +232,9 @@
   </div>
 </div>
 
+<script src="js/api.js"></script>
+<script src="js/toast.js"></script>
+
 <script>
   /* =========================================================
      VALIDATION RULES (all handled on the frontend)
@@ -348,19 +351,22 @@
     try {
       // Input is already validated, so the server only needs to check the credentials.
       // TODO: Replace with your server URL.
-      const res = await fetch('/api/login', {
+      const res = await fetch('/api/auth/login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ username, password })
       });
 
       if (res.ok) {
-        loginMsg.textContent = 'Login successful!';
-        loginMsg.classList.add('ok');
-        // window.location.href = '/dashboard';
+        Toast.success("Login Successful!", "Success")
+
+
+        setTimeout(() => {
+          window.location.href = '/dashboard';
+        }, 1000);
+
       } else {
-        loginMsg.textContent = 'Incorrect username or password';
-        loginMsg.classList.add('fail');
+        Toast.error('Incorrect username or password', "Error");
       }
     } catch (err) {
       loginMsg.textContent = 'Unable to connect to the server';
