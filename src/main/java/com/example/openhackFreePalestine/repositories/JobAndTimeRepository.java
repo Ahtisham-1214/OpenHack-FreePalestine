@@ -5,6 +5,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-interface JobAndTimeRepositories extends JpaRepository<JobAndTime, Long> {
+public interface JobAndTimeRepository extends JpaRepository<JobAndTime, Long> {
 
 }
