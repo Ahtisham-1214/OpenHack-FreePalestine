@@ -8,6 +8,8 @@ import com.example.openhackFreePalestine.repositories.JobAndTimeRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class JobAndTimeService {
 
@@ -33,5 +35,12 @@ public class JobAndTimeService {
         jobAndTimeRepository.deleteById(jobId);
 
 
+    }
+
+
+    public List<JobAndTimeResponseDto> getJobAndTimes() {
+        return jobAndTimeRepository.findAll().stream()
+                .map(myMapper::toJobAndTimeResponseDto)
+                .toList();
     }
 }

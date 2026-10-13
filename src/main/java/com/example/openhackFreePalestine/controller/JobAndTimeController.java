@@ -8,6 +8,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/jobs")
 public class JobAndTimeController {
@@ -29,6 +31,11 @@ public class JobAndTimeController {
         jobAndTimeService.deleteJobAndTime(jobId);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
 
+    }
+
+    @GetMapping
+    public ResponseEntity<List<JobAndTimeResponseDto>> getJobAndTimes() {
+        return ResponseEntity.ok(jobAndTimeService.getJobAndTimes());
     }
 
 
