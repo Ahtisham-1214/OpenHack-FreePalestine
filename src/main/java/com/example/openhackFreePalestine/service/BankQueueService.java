@@ -23,7 +23,7 @@ public class BankQueueService {
 
     public ServiceResponseDto requestService(ServiceRequestDto request) {
         if (!jobRepository.existsByJob(request.getService()))
-                throw new RuntimeException("Selected Service Bank does not Offer");
+                throw new IllegalArgumentException("Selected Service Bank does not Offer");
 
             return myMapper.toServiceResponseDto(
                         bankQueueRepository.save(myMapper.toBankQueue(request))

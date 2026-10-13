@@ -144,9 +144,9 @@
       // Populate options dynamically from backend data
       jobs.forEach(job => {
         const option = document.createElement("option");
-        // Using job.id as value so you can easily reference it later when submitting a ticket/queue
-        option.value = job.id;
-        option.textContent = `${job.job}`; // Displays name and estimated time
+        // Set value to job.job (the String name) so it matches ServiceRequestDto's service field
+        option.value = job.job;
+        option.textContent = job.job;
         selectElement.appendChild(option);
       });
 
@@ -157,7 +157,7 @@
   }
 
   // Handle form submission / continue action
-  document.getElementById("go").addEventListener("click", function () {
+  document.getElementById("go").addEventListener("click", async function () {
     const serviceSelect = document.getElementById("service");
     const nameInput = document.getElementById("name").value.trim();
     const resultDiv = document.getElementById("result");
@@ -172,14 +172,28 @@
       return;
     }
 
-    const selectedJobText = serviceSelect.options[serviceSelect.selectedIndex].text;
-    const selectedJobId = serviceSelect.value;
+    // Payload matching ServiceRequestDto { String name; String service; }
+    const payload = {
+      name: nameInput,
+      service: serviceSelect.value
+    };
 
-    resultDiv.textContent = `${nameInput}, you selected: ${selectedJobText}`;
-    Toast.success(`Service selected successfully!`, "Ready");
+    try {
+      // Calls POST /services on your Spring Boot backend
+      const response = await apiRequest('/services', {
+        method: 'POST',
+        body: JSON.stringify(payload)
+      });
 
-    // Here you can proceed to send the selectedJobId and name to a next endpoint if needed
-    console.log("Selected Job ID:", selectedJobId, "Customer Name:", nameInput);
+      Toast.success("Service requested successfully!", "Success");
+
+      // Optional: Clear form inputs after success
+      document.getElementById("name").value = "";
+      serviceSelect.selectedIndex = 0;
+
+    } catch (error) {
+      console.error("Failed to submit service request:", error);
+    }
   });
 
   // Load jobs when the page loads
