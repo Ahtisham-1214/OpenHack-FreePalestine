@@ -97,44 +97,93 @@
 </style>
 </head>
 <body>
-  <main class="card">
-    <h1>Select a service</h1>
-    <p>Choose what you need help with.</p>
+<main class="card">
+  <h1>Select a service</h1>
+  <p>Choose what you need help with.</p>
 
-    <div class="field">
-      <label for="name">Your name</label>
-      <input type="text" id="name" placeholder="Enter your full name" autocomplete="name">
-    </div>
+  <div class="field">
+    <label for="name">Your name</label>
+    <input type="text" id="name" placeholder="Enter your full name" autocomplete="name">
+  </div>
 
-    <label for="service">Service</label>
-    <div class="select-wrap">
-      <select id="service">
-        <option value="" disabled selected>Choose a service</option>
-        <option value="utility">Utility bills</option>
-        <option value="cheque">Cheque cash</option>
-        <option value="deposit">Deposit</option>
-        <option value="chalan">Chalan paid</option>
-        <option value="account">New account open</option>
-      </select>
-    </div>
+  <label for="service">Service</label>
+  <div class="select-wrap">
+    <select id="service">
+      <option value="" disabled selected>Loading services...</option>
+    </select>
+  </div>
 
-    <button type="button" id="go">Continue</button>
-    <div id="result" aria-live="polite"></div>
-  </main>
+  <button type="button" id="go">Continue</button>
+  <div id="result" aria-live="polite"></div>
+</main>
 
-  <script>
-    document.getElementById("go").addEventListener("click", function () {
-      var s = document.getElementById("service");
-      var name = document.getElementById("name").value.trim();
-      var out = document.getElementById("result");
-      if (!name) {
-        out.textContent = "Please enter your name.";
-      } else if (!s.value) {
-        out.textContent = "Please choose a service.";
-      } else {
-        out.textContent = name + ", you selected: " + s.options[s.selectedIndex].text;
+<!-- Include your Toast and API wrapper scripts -->
+<script src="/js/toast.js"></script>
+<script src="/js/api.js"></script>
+
+<script>
+  // Fetch and populate the dropdown from the backend on page load
+  async function loadServices() {
+    const selectElement = document.getElementById("service");
+
+    try {
+      // Calls GET /jobs which returns List<JobResponseDto>
+      const jobs = await apiRequest('/jobs');
+
+      // Reset dropdown with default disabled prompt
+      selectElement.innerHTML = '<option value="" disabled selected>Choose a service</option>';
+
+      if (!jobs || jobs.length === 0) {
+        const opt = document.createElement("option");
+        opt.disabled = true;
+        opt.textContent = "No services available";
+        selectElement.appendChild(opt);
+        return;
       }
-    });
-  </script>
+
+      // Populate options dynamically from backend data
+      jobs.forEach(job => {
+        const option = document.createElement("option");
+        // Using job.id as value so you can easily reference it later when submitting a ticket/queue
+        option.value = job.id;
+        option.textContent = `${job.job}`; // Displays name and estimated time
+        selectElement.appendChild(option);
+      });
+
+    } catch (error) {
+      console.error("Failed to load services:", error);
+      selectElement.innerHTML = '<option value="" disabled selected>Error loading services</option>';
+    }
+  }
+
+  // Handle form submission / continue action
+  document.getElementById("go").addEventListener("click", function () {
+    const serviceSelect = document.getElementById("service");
+    const nameInput = document.getElementById("name").value.trim();
+    const resultDiv = document.getElementById("result");
+
+    if (!nameInput) {
+      Toast.info("Please enter your name.", "Validation Error");
+      return;
+    }
+
+    if (!serviceSelect.value) {
+      Toast.info("Please choose a service.", "Validation Error");
+      return;
+    }
+
+    const selectedJobText = serviceSelect.options[serviceSelect.selectedIndex].text;
+    const selectedJobId = serviceSelect.value;
+
+    resultDiv.textContent = `${nameInput}, you selected: ${selectedJobText}`;
+    Toast.success(`Service selected successfully!`, "Ready");
+
+    // Here you can proceed to send the selectedJobId and name to a next endpoint if needed
+    console.log("Selected Job ID:", selectedJobId, "Customer Name:", nameInput);
+  });
+
+  // Load jobs when the page loads
+  loadServices();
+</script>
 </body>
 </html>
