@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>About Us | Free Palestine Bank</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <script>
+    tailwind.config = {
+      theme: { extend: { fontFamily: { sans: ['Inter', 'sans-serif'] } } }
+    }
+  </script>
+  <style>
+    body { font-family: 'Inter', sans-serif; }
+
+    .stage { background: #ffffff; }
+
+    /* Animated background: moving grid + flowing waves */
+    .bg-anim {
+      position: fixed;
+      inset: 0;
+      overflow: hidden;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    /* grid that keeps sliding diagonally, faded towards the edges */
+    .bg-grid {
+      position: absolute;
+      inset: 0;
+      background-image:
+        linear-gradient(rgba(8, 45, 107, 0.10) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(8, 45, 107, 0.10) 1px, transparent 1px);
+      background-size: 56px 56px;
+      animation: grid-move 5s linear infinite;
+      -webkit-mask-image: radial-gradient(ellipse at center, #000 30%, transparent 85%);
+      mask-image: radial-gradient(ellipse at center, #000 30%, transparent 85%);
+    }
+    @keyframes grid-move {
+      from { background-position: 0 0; }
+      to   { background-position: 56px 56px; }
+    }
+
+    /* three waves at the bottom flowing at different speeds */
+    .wave {
+      position: absolute;
+      left: 0;
+      width: 100%;
+      height: 140px;
+      background-repeat: repeat-x;
+      background-size: 1200px 100%;
+    }
+    .wave.w1 { bottom: 0;    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1200 120' preserveAspectRatio='none'%3E%3Cpath fill='%23082d6b' fill-opacity='0.28' d='M0,60 C150,110 350,10 600,60 C850,110 1050,10 1200,60 L1200,120 L0,120 Z'/%3E%3C/svg%3E"); animation: wave-move 12s linear infinite; }
+    .wave.w2 { bottom: 18px; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1200 120' preserveAspectRatio='none'%3E%3Cpath fill='%234f8cff' fill-opacity='0.28' d='M0,60 C150,110 350,10 600,60 C850,110 1050,10 1200,60 L1200,120 L0,120 Z'/%3E%3C/svg%3E"); animation: wave-move 18s linear infinite reverse; }
+    .wave.w3 { bottom: 36px; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1200 120' preserveAspectRatio='none'%3E%3Cpath fill='%23007a3d' fill-opacity='0.16' d='M0,60 C150,110 350,10 600,60 C850,110 1050,10 1200,60 L1200,120 L0,120 Z'/%3E%3C/svg%3E"); animation: wave-move 26s linear infinite; }
+    @keyframes wave-move {
+      from { background-position-x: 0; }
+      to   { background-position-x: 1200px; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .bg-grid, .wave { animation: none; }
+    }
+
+    /* Palestine flag stripe */
+    .flag-stripe {
+      height: 6px;
+      background: linear-gradient(90deg, #000 0 33.33%, #fff 33.33% 66.66%, #007a3d 66.66% 100%);
+      position: relative;
+    }
+    .flag-stripe::before {
+      content: "";
+      position: absolute; left: 0; top: 0; bottom: 0; width: 70px;
+      background: #ce1126;
+      clip-path: polygon(0 0, 100% 50%, 0 100%);
+    }
+
+    /* ================= Glass cards (Uiverse by codebykay101) ================= */
+    .glass-row {
+      position: relative;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .glass-row .glass {
+      position: relative;
+      width: 200px;
+      height: 270px;
+      background: linear-gradient(rgba(8, 45, 107, 0.92), rgba(8, 45, 107, 0.7));
+      border: 1px solid rgba(8, 45, 107, 0.25);
+      box-shadow: 0 25px 25px rgba(8, 45, 107, 0.25);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      /* keep the content inside the part of the card that is not covered by the next card */
+      padding: 0 45px 44px 0;
+      transition: 0.5s;
+      border-radius: 10px;
+      margin: 0 -45px;
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      transform: rotate(calc(var(--r) * 1deg));
+      color: #fff;
+    }
+    .glass-row .glass:last-child { padding-right: 0; }
+
+    .glass-row:hover .glass {
+      transform: rotate(0deg);
+      margin: 0 10px;
+      padding-right: 0;
+    }
+    .glass-row .glass:last-child::before,
+    .glass-row:hover .glass::before { padding-right: 0; }
+
+    /* bottom bar = member name */
+    .glass-row .glass::before {
+      content: attr(data-text);
+      position: absolute;
+      bottom: 0;
+      width: 100%;
+      height: 44px;
+      box-sizing: border-box;
+      padding-right: 45px;          /* same offset as the card content */
+      transition: padding 0.5s;
+      background: rgba(255, 255, 255, 0.08);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      color: #fff;
+      font-size: 15px;
+      font-weight: 600;
+    }
+
+    .glass .photo {
+      width: 100px;
+      height: 100px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 3px solid rgba(255, 255, 255, 0.85);
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.35);
+      margin-bottom: 14px;
+    }
+    .glass .dept {
+      font-size: 13px;
+      font-weight: 600;
+      line-height: 1.25;
+      padding: 0 8px;
+    }
+    .glass .uni {
+      margin-top: 4px;
+      font-size: 12px;
+      color: rgba(255, 255, 255, 0.7);
+    }
+
+    /* Phones and tablets: no overlap, stacked cards */
+    @media (max-width: 800px) {
+      .glass-row { flex-direction: column; gap: 20px; }
+      .glass-row .glass,
+      .glass-row:hover .glass {
+        margin: 0;
+        padding: 0 0 44px;
+        transform: none;
+      }
+      .glass-row .glass::before { padding-right: 0; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .glass-row .glass { transition: none; }
+    }
+  </style>
+</head>
+<body class="bg-white text-slate-800 min-h-screen selection:bg-blue-600 selection:text-white">
+
+  <div class="stage min-h-screen">
+    <div class="bg-anim" aria-hidden="true"><div class="bg-grid"></div><div class="wave w3"></div><div class="wave w2"></div><div class="wave w1"></div></div>
+    <div class="relative z-10 max-w-5xl mx-auto px-6 pt-14 pb-16 text-center">
+
+      <img src="logo.png" alt="Free Palestine Bank" class="w-24 h-24 rounded-full bg-white object-contain mx-auto mb-5 shadow-xl ring-1 ring-slate-200">
+      <h1 class="text-4xl sm:text-5xl font-extrabold tracking-tight text-[#082d6b]">Team Free Palestine</h1>
+      <p class="mt-4 text-slate-500 text-base sm:text-lg max-w-xl mx-auto">
+        We built a smarter token and queue system so nobody waits in line without knowing their turn.
+      </p>
+
+      <!-- Team: hover the row to fan the cards out -->
+      <div class="glass-row mt-16 mb-14">
+
+        <div class="glass" style="--r:-15" data-text="Muhammad Ahtisham">
+          <img class="photo" src="member1.jpg" alt="Muhammad Ahtisham">
+          <div class="dept">Dept: Artificial Intelligence</div>
+          <div class="uni">Aror University of Art, Architecture, Design and Heritage</div>
+        </div>
+
+        <div class="glass" style="--r:5" data-text="Ghufran Arain">
+          <img class="photo" src="member2.jpg" alt="Ghufran Arain">
+          <div class="dept">Dept: Artificial Intelligence</div>
+          <div class="uni">Aror University of Art, Architecture, Design and Heritage</div>
+        </div>
+
+        <div class="glass" style="--r:25" data-text="Anees Ahmed">
+        <img class="photo" src="member3.jpg" alt="Anees Ahmed">
+          <div class="dept">Dept: Artificial Intelligence</div>
+          <div class="uni">Aror University of Art, Architecture, Design and Heritage</div>
+        </div>
+
+      </div>
+
+      <!-- GitHub -->
+      <a href="https://github.com/YOUR-USERNAME/OpenHack-FreePalestine" target="_blank" rel="noopener noreferrer"
+         class="inline-flex items-center justify-center gap-2 py-3.5 px-8 bg-[#082d6b] hover:bg-[#061f4a] text-white font-semibold rounded-xl shadow-md shadow-[#082d6b]/20 active:scale-[0.99] transition-all duration-150 text-sm">
+        <i class="fa-brands fa-github text-lg"></i>
+        <span>View on GitHub</span>
+      </a>
+
+    </div>
+  </div>
+  <div class="flag-stripe"></div>
+
+</body>
+</html>
