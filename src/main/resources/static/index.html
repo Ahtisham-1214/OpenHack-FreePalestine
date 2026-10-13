@@ -13,7 +13,7 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    background: linear-gradient(135deg, #0b3d91, #1565c0 60%, #42a5f5);
+    background: #ffffff;
     padding: 16px;
   }
 
@@ -25,6 +25,14 @@
     padding: 36px 32px;
     box-shadow: 0 12px 40px rgba(0,0,0,.25);
     text-align: center;
+  }
+
+  .logo-img {
+    width: 80px;
+    height: 80px;
+    object-fit: contain;
+    display: block;
+    margin: 0 auto 12px;
   }
 
   .logo {
@@ -39,7 +47,6 @@
     margin-bottom: 24px;
   }
 
-  /* QR image with a transparent button on top of it */
   .qr-box {
     position: relative;
     display: inline-block;
@@ -60,7 +67,7 @@
     position: absolute;
     top: 12px;
     left: 12px;
-    width: 200px;      /* same size as the QR image */
+    width: 200px;
     height: 200px;
     background: transparent;
     border: none;
@@ -80,43 +87,48 @@
     margin-bottom: 8px;
   }
 
-  a { color: #1565c0; text-decoration: none; cursor: pointer; }
-  a:hover { text-decoration: underline; }
-
-  .switch {
-    font-size: 13px;
-    color: #555;
-    margin-top: 16px;
-  }
-
-  .secure {
-    font-size: 12px;
-    color: #888;
+  .download-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    width: 100%;
     margin-top: 22px;
+    padding: 13px 20px;
+    background: #082d6b;
+    color: #fff;
+    font-size: 14px;
+    font-weight: 600;
+    border-radius: 12px;
+    box-shadow: 0 6px 16px rgba(8,45,107,.25);
+    text-decoration: none;
+    transition: background .15s;
+  }
+  .download-btn:hover {
+    background: #061f4a;
+    text-decoration: none;
   }
 </style>
 </head>
 <body>
 
 <div class="card">
+  <img src="logo.png" alt="Free Palestine Bank" class="logo-img">
   <div class="logo">Free Palestine Bank</div>
   <div class="subtitle">Secure token verification</div>
 
   <div class="qr-box">
     <img src="qr.png" alt="QR code">
-    <!-- Transparent button, same size as the QR image -->
     <button type="button" class="qr-btn" id="qrBtn" aria-label="Open job and admin page"></button>
   </div>
 
   <div class="scan-text">Scan QR code for token</div>
   <div class="hint">After scanning, you will be taken to the next page.</div>
 
-  <div class="switch">Back to <a href="login.html">Login</a></div>
-  <div class="secure">🔒 Your information is secure</div>
+  <a href="/qr.png" download="qr.png" class="download-btn">Download QR</a>
 </div>
 
 <script>
-  // Clicking the QR code opens job_and_admin.html
   document.getElementById('qrBtn').addEventListener('click', () => {
     window.location.href = 'services.html';
   });
