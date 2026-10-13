@@ -99,104 +99,147 @@
 </style>
 </head>
 <body>
-  <main class="card">
-    <h1>Create new service</h1>
-    <p>Add a service and how long it takes to complete.</p>
+<main class="card">
+  <h1>Create new service</h1>
+  <p>Add a service and how long it takes to complete.</p>
 
-    <div class="field">
-      <label for="sname">Service name</label>
-      <input type="text" id="sname" placeholder="e.g. Utility bills" autocomplete="off">
+  <div class="field">
+    <label for="sname">Service name</label>
+    <input type="text" id="sname" placeholder="e.g. Utility bills" autocomplete="off">
+  </div>
+
+  <div class="field">
+    <label for="stime">Service time</label>
+    <div class="time-row">
+      <input type="number" id="stime" min="0.1" step="0.1" placeholder="e.g. 1.5">
+      <span>minutes</span>
     </div>
+    <p class="hint">Use decimals for part minutes, for example 1 or 1.5.</p>
+  </div>
 
-    <div class="field">
-      <label for="stime">Service time</label>
-      <div class="time-row">
-        <input type="number" id="stime" min="0.1" step="0.1" placeholder="e.g. 1.5">
-        <span>minutes</span>
-      </div>
-      <p class="hint">Use decimals for part minutes, for example 1 or 1.5.</p>
-    </div>
+  <button type="button" class="primary" id="add">Create service</button>
+  <div id="msg" aria-live="polite"></div>
 
-    <button type="button" class="primary" id="add">Create service</button>
-    <div id="msg" aria-live="polite"></div>
+  <h2>Existing services</h2>
+  <ul id="list"></ul>
+</main>
 
-    <h2>Existing services</h2>
-    <ul id="list"></ul>
-  </main>
+<!-- Include your toast and api wrappers first -->
+<script src="/js/toast.js"></script>
+<script src="/js/api.js"></script>
 
-  <script>
-    var KEY = "bankServices";
-    var services = [];
+<script>
+  let services = [];
+
+  // Fetch existing services from the Spring Boot backend on load
+  async function fetchServices() {
+    try {
+      // Calls GET /jobs
+      services = await apiRequest('/jobs');
+      render();
+    } catch (error) {
+      console.error("Failed to load services", error);
+    }
+  }
+
+  function render() {
+    const list = document.getElementById("list");
+    list.innerHTML = "";
+
+    if (!services || services.length === 0) {
+      list.innerHTML = '<li class="empty">No services yet. Create the first one above.</li>';
+      return;
+    }
+
+    services.forEach(function (s) {
+      const li = document.createElement("li");
+      const info = document.createElement("div");
+
+      const n = document.createElement("div");
+      n.className = "name";
+      // Matches your JobResponseDto fields (assuming 'job' and 'time')
+      n.textContent = s.job;
+
+      const t = document.createElement("div");
+      t.className = "time";
+      t.textContent = s.time + " min";
+
+      info.appendChild(n);
+      info.appendChild(t);
+
+      const b = document.createElement("button");
+      b.type = "button";
+      b.className = "remove";
+      b.textContent = "Remove";
+      b.addEventListener("click", async function () {
+        try {
+          // Calls DELETE /jobs/{id}
+          await apiRequest(`/jobs/${s.id}`, { method: 'DELETE' });
+          Toast.success("Service removed successfully.", "Deleted");
+          await fetchServices(); // Refresh list from backend
+        } catch (error) {
+          console.error("Failed to delete service", error);
+        }
+      });
+
+      li.appendChild(info);
+      li.appendChild(b);
+      list.appendChild(li);
+    });
+  }
+
+  document.getElementById("add").addEventListener("click", async function () {
+    const jobInput = document.getElementById("sname").value.trim();
+    const timeInput = parseFloat(document.getElementById("stime").value);
+
+    if (!jobInput) {
+      Toast.error("Please enter a service name.", "Validation Error");
+      return;
+    }
+    if (!(timeInput > 0)) {
+      Toast.error("Please enter a service time greater than 0.", "Validation Error");
+      return;
+    }
+
+    // Check client-side for duplication against current list state
+    const dup = services.some(function (s) {
+      return s.job.toLowerCase() === jobInput.toLowerCase();
+    });
+    if (dup) {
+      Toast.error("This service already exists.", "Duplicate");
+      return;
+    }
+
+    // Payload matching JobRequestDto { String job; double time; }
+    const payload = {
+      job: jobInput,
+      time: timeInput
+    };
 
     try {
-      services = JSON.parse(localStorage.getItem(KEY)) || [];
-    } catch (e) { services = []; }
-
-    function save() {
-      try { localStorage.setItem(KEY, JSON.stringify(services)); } catch (e) {}
-    }
-
-    function show(text, isError) {
-      var m = document.getElementById("msg");
-      m.textContent = text;
-      m.className = isError ? "error" : "";
-    }
-
-    function render() {
-      var list = document.getElementById("list");
-      list.innerHTML = "";
-      if (!services.length) {
-        list.innerHTML = '<li class="empty">No services yet. Create the first one above.</li>';
-        return;
-      }
-      services.forEach(function (s, i) {
-        var li = document.createElement("li");
-        var info = document.createElement("div");
-        var n = document.createElement("div");
-        n.className = "name";
-        n.textContent = s.name;
-        var t = document.createElement("div");
-        t.className = "time";
-        t.textContent = s.time + " min";
-        info.appendChild(n);
-        info.appendChild(t);
-        var b = document.createElement("button");
-        b.type = "button";
-        b.className = "remove";
-        b.textContent = "Remove";
-        b.addEventListener("click", function () {
-          services.splice(i, 1);
-          save();
-          render();
-          show("Service removed.", false);
-        });
-        li.appendChild(info);
-        li.appendChild(b);
-        list.appendChild(li);
+      // Calls POST /jobs
+      await apiRequest('/jobs', {
+        method: 'POST',
+        body: JSON.stringify(payload)
       });
-    }
 
-    document.getElementById("add").addEventListener("click", function () {
-      var name = document.getElementById("sname").value.trim();
-      var time = parseFloat(document.getElementById("stime").value);
+      Toast.success("Service created successfully.", "Success");
 
-      if (!name) { show("Please enter a service name.", true); return; }
-      if (!(time > 0)) { show("Please enter a service time greater than 0.", true); return; }
-      var dup = services.some(function (s) {
-        return s.name.toLowerCase() === name.toLowerCase();
-      });
-      if (dup) { show("This service already exists.", true); return; }
-
-      services.push({ name: name, time: time });
-      save();
-      render();
+      // Clear inputs and refocus
       document.getElementById("sname").value = "";
       document.getElementById("stime").value = "";
       document.getElementById("sname").focus();
-      show("Service created.", false);
-    });
 
-    render();
-  </script>
+      // Reload data from backend
+      await fetchServices();
+
+    } catch (error) {
+      console.error("Failed to create service", error);
+    }
+  });
+
+  // Initial load
+  fetchServices();
+</script>
 </body>
 </html>

@@ -9,6 +9,7 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 public class JobResponseDto {
+    private Long id;
     private String job;
     private double time;
 }
