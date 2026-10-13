@@ -1,13 +1,140 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <title>Job And Time</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Bank Services</title>
+<style>
+  :root {
+    --bg: #eef3f1;
+    --card: #ffffff;
+    --ink: #1c2b27;
+    --muted: #5d706a;
+    --accent: #0f6b57;
+    --line: #cfdad6;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    min-height: 100vh;
+    display: grid;
+    place-items: center;
+    background: var(--bg);
+    color: var(--ink);
+    font-family: "Segoe UI", Tahoma, Arial, sans-serif;
+    padding: 20px;
+  }
+  .card {
+    width: 100%;
+    max-width: 420px;
+    background: var(--card);
+    padding: 32px 28px;
+    border-radius: 10px;
+    border: 1px solid var(--line);
+  }
+  h1 { margin: 0 0 6px; font-size: 1.5rem; }
+  p  { margin: 0 0 22px; color: var(--muted); }
+  label { display: block; margin-bottom: 8px; font-weight: 600; }
+
+  /* Dropdown */
+  .select-wrap { position: relative; }
+  .select-wrap::after {
+    content: "";
+    position: absolute;
+    right: 16px;
+    top: 50%;
+    width: 8px; height: 8px;
+    border-right: 2px solid var(--accent);
+    border-bottom: 2px solid var(--accent);
+    transform: translateY(-70%) rotate(45deg);
+    pointer-events: none;
+  }
+  select {
+    width: 100%;
+    appearance: none;
+    -webkit-appearance: none;
+    padding: 13px 42px 13px 14px;
+    font-size: 1rem;
+    color: var(--ink);
+    background: #fff;
+    border: 1.5px solid var(--line);
+    border-radius: 8px;
+    cursor: pointer;
+    transition: border-color .2s;
+  }
+  select:hover { border-color: var(--accent); }
+  select:focus { outline: 3px solid rgba(15,107,87,.25); border-color: var(--accent); }
+
+  /* Name field */
+  .field { margin-bottom: 18px; }
+  input[type="text"] {
+    width: 100%;
+    padding: 13px 14px;
+    font-size: 1rem;
+    color: var(--ink);
+    background: #fff;
+    border: 1.5px solid var(--line);
+    border-radius: 8px;
+    transition: border-color .2s;
+  }
+  input[type="text"]:hover { border-color: var(--accent); }
+  input[type="text"]:focus { outline: 3px solid rgba(15,107,87,.25); border-color: var(--accent); }
+
+  button {
+    margin-top: 18px;
+    width: 100%;
+    padding: 13px;
+    font-size: 1rem;
+    font-weight: 600;
+    color: #fff;
+    background: var(--accent);
+    border: 0;
+    border-radius: 8px;
+    cursor: pointer;
+  }
+  button:hover { background: #0b5646; }
+  #result { margin-top: 16px; min-height: 1.4em; font-weight: 600; color: var(--accent); }
+</style>
 </head>
 <body>
+  <main class="card">
+    <h1>Select a service</h1>
+    <p>Choose what you need help with.</p>
 
+    <div class="field">
+      <label for="name">Your name</label>
+      <input type="text" id="name" placeholder="Enter your full name" autocomplete="name">
+    </div>
 
+    <label for="service">Service</label>
+    <div class="select-wrap">
+      <select id="service">
+        <option value="" disabled selected>Choose a service</option>
+        <option value="utility">Utility bills</option>
+        <option value="cheque">Cheque cash</option>
+        <option value="deposit">Deposit</option>
+        <option value="chalan">Chalan paid</option>
+        <option value="account">New account open</option>
+      </select>
+    </div>
 
+    <button type="button" id="go">Continue</button>
+    <div id="result" aria-live="polite"></div>
+  </main>
 
+  <script>
+    document.getElementById("go").addEventListener("click", function () {
+      var s = document.getElementById("service");
+      var name = document.getElementById("name").value.trim();
+      var out = document.getElementById("result");
+      if (!name) {
+        out.textContent = "Please enter your name.";
+      } else if (!s.value) {
+        out.textContent = "Please choose a service.";
+      } else {
+        out.textContent = name + ", you selected: " + s.options[s.selectedIndex].text;
+      }
+    });
+  </script>
 </body>
 </html>

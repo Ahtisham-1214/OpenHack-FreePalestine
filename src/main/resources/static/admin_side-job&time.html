@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Admin - Manage Services</title>
+<style>
+  :root {
+    --bg: #eef3f1;
+    --card: #ffffff;
+    --ink: #1c2b27;
+    --muted: #5d706a;
+    --accent: #0f6b57;
+    --line: #cfdad6;
+    --danger: #b3261e;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    min-height: 100vh;
+    display: grid;
+    place-items: start center;
+    background: var(--bg);
+    color: var(--ink);
+    font-family: "Segoe UI", Tahoma, Arial, sans-serif;
+    padding: 32px 20px;
+  }
+  .card {
+    width: 100%;
+    max-width: 520px;
+    background: var(--card);
+    padding: 32px 28px;
+    border-radius: 10px;
+    border: 1px solid var(--line);
+  }
+  h1 { margin: 0 0 6px; font-size: 1.5rem; }
+  h2 { margin: 30px 0 12px; font-size: 1.1rem; }
+  p  { margin: 0 0 22px; color: var(--muted); }
+  label { display: block; margin-bottom: 8px; font-weight: 600; }
+  .field { margin-bottom: 18px; }
+  .hint { margin: 6px 0 0; font-size: .85rem; color: var(--muted); }
+
+  input {
+    width: 100%;
+    padding: 13px 14px;
+    font-size: 1rem;
+    color: var(--ink);
+    background: #fff;
+    border: 1.5px solid var(--line);
+    border-radius: 8px;
+    transition: border-color .2s;
+  }
+  input:hover { border-color: var(--accent); }
+  input:focus { outline: 3px solid rgba(15,107,87,.25); border-color: var(--accent); }
+
+  .time-row { display: flex; align-items: center; gap: 10px; }
+  .time-row input { flex: 1; }
+  .time-row span { color: var(--muted); }
+
+  .primary {
+    width: 100%;
+    padding: 13px;
+    font-size: 1rem;
+    font-weight: 600;
+    color: #fff;
+    background: var(--accent);
+    border: 0;
+    border-radius: 8px;
+    cursor: pointer;
+  }
+  .primary:hover { background: #0b5646; }
+  #msg { margin-top: 12px; min-height: 1.4em; font-weight: 600; color: var(--accent); }
+  #msg.error { color: var(--danger); }
+
+  ul { list-style: none; margin: 0; padding: 0; }
+  li {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 12px 14px;
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    margin-bottom: 8px;
+  }
+  li .name { font-weight: 600; }
+  li .time { color: var(--muted); font-size: .9rem; }
+  .remove {
+    background: none;
+    border: 1.5px solid var(--line);
+    color: var(--danger);
+    border-radius: 6px;
+    padding: 6px 10px;
+    cursor: pointer;
+    font-size: .85rem;
+  }
+  .remove:hover { border-color: var(--danger); }
+  .empty { color: var(--muted); }
+</style>
+</head>
+<body>
+  <main class="card">
+    <h1>Create new service</h1>
+    <p>Add a service and how long it takes to complete.</p>
+
+    <div class="field">
+      <label for="sname">Service name</label>
+      <input type="text" id="sname" placeholder="e.g. Utility bills" autocomplete="off">
+    </div>
+
+    <div class="field">
+      <label for="stime">Service time</label>
+      <div class="time-row">
+        <input type="number" id="stime" min="0.1" step="0.1" placeholder="e.g. 1.5">
+        <span>minutes</span>
+      </div>
+      <p class="hint">Use decimals for part minutes, for example 1 or 1.5.</p>
+    </div>
+
+    <button type="button" class="primary" id="add">Create service</button>
+    <div id="msg" aria-live="polite"></div>
+
+    <h2>Existing services</h2>
+    <ul id="list"></ul>
+  </main>
+
+  <script>
+    var KEY = "bankServices";
+    var services = [];
+
+    try {
+      services = JSON.parse(localStorage.getItem(KEY)) || [];
+    } catch (e) { services = []; }
+
+    function save() {
+      try { localStorage.setItem(KEY, JSON.stringify(services)); } catch (e) {}
+    }
+
+    function show(text, isError) {
+      var m = document.getElementById("msg");
+      m.textContent = text;
+      m.className = isError ? "error" : "";
+    }
+
+    function render() {
+      var list = document.getElementById("list");
+      list.innerHTML = "";
+      if (!services.length) {
+        list.innerHTML = '<li class="empty">No services yet. Create the first one above.</li>';
+        return;
+      }
+      services.forEach(function (s, i) {
+        var li = document.createElement("li");
+        var info = document.createElement("div");
+        var n = document.createElement("div");
+        n.className = "name";
+        n.textContent = s.name;
+        var t = document.createElement("div");
+        t.className = "time";
+        t.textContent = s.time + " min";
+        info.appendChild(n);
+        info.appendChild(t);
+        var b = document.createElement("button");
+        b.type = "button";
+        b.className = "remove";
+        b.textContent = "Remove";
+        b.addEventListener("click", function () {
+          services.splice(i, 1);
+          save();
+          render();
+          show("Service removed.", false);
+        });
+        li.appendChild(info);
+        li.appendChild(b);
+        list.appendChild(li);
+      });
+    }
+
+    document.getElementById("add").addEventListener("click", function () {
+      var name = document.getElementById("sname").value.trim();
+      var time = parseFloat(document.getElementById("stime").value);
+
+      if (!name) { show("Please enter a service name.", true); return; }
+      if (!(time > 0)) { show("Please enter a service time greater than 0.", true); return; }
+      var dup = services.some(function (s) {
+        return s.name.toLowerCase() === name.toLowerCase();
+      });
+      if (dup) { show("This service already exists.", true); return; }
+
+      services.push({ name: name, time: time });
+      save();
+      render();
+      document.getElementById("sname").value = "";
+      document.getElementById("stime").value = "";
+      document.getElementById("sname").focus();
+      show("Service created.", false);
+    });
+
+    render();
+  </script>
+</body>
+</html>
