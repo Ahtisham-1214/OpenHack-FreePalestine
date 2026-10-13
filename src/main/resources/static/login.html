@@ -267,6 +267,9 @@
   </div>
 </div>
 
+<script src="js/api.js"></script>
+<script src="js/toast.js"></script>
+
 <script>
   /* =========================================================
      VALIDATION RULES (all handled on the frontend)
@@ -381,25 +384,27 @@
     loginBtn.textContent = 'Signing in...';
 
     try {
-      // Input is already validated, so the server only needs to check the credentials.
-      // TODO: Replace with your server URL.
-      const res = await fetch('/api/login', {
+      // apiRequest returns the parsed JSON data directly on success
+      const data = await apiRequest('/api/auth/login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ username, password })
       });
 
-      if (res.ok) {
-        loginMsg.textContent = 'Login successful!';
-        loginMsg.classList.add('ok');
-        // window.location.href = '/dashboard';
-      } else {
-        loginMsg.textContent = 'Incorrect username or password';
+      // If apiRequest didn't throw an error, the login succeeded!
+      Toast.success("Login Successful!", "Success");
+
+      setTimeout(() => {
+        window.location.href = '/dashboard.html';
+      }, 1000);
+
+    } catch (err) {
+      // If apiRequest caught an error (like 401 Invalid Credentials),
+      // it already showed the Toast, but we can catch any custom flow here.
+      if (err.name !== 'ApiError') {
+        loginMsg.textContent = 'Unable to connect to the server';
         loginMsg.classList.add('fail');
       }
-    } catch (err) {
-      loginMsg.textContent = 'Unable to connect to the server';
-      loginMsg.classList.add('fail');
     } finally {
       loginBtn.disabled = false;
       loginBtn.textContent = 'Login';
