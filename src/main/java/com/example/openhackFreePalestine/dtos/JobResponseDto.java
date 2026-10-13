@@ -8,7 +8,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @NoArgsConstructor
-public class JobAndTimeRequestDto {
+public class JobResponseDto {
     private String job;
     private double time;
 }
