@@ -6,10 +6,7 @@ import com.example.openhackFreePalestine.dtos.JobAndTimeResponseDto;
 import com.example.openhackFreePalestine.service.JobAndTimeService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/jobs")
@@ -26,5 +23,13 @@ public class JobAndTimeController {
         return ResponseEntity.status(HttpStatus.CREATED).body(jobAndTimeService.postJobAndTime(jobAndTimeRequestDto));
 
     }
+
+    @DeleteMapping("/{jobId}")
+    public ResponseEntity<Void> postJobAndTime(@PathVariable Long jobId) {
+        jobAndTimeService.deleteJobAndTime(jobId);
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+
+    }
+
 
 }
