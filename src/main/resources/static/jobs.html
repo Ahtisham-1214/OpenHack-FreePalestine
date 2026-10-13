@@ -10,7 +10,7 @@
     --card: #ffffff;
     --ink: #1c2b27;
     --muted: #5d706a;
-    --accent: #0f6b57;
+    --accent: #0b3d91;
     --line: #cfdad6;
     --danger: #b3261e;
   }
@@ -20,8 +20,7 @@
     min-height: 100vh;
     display: grid;
     place-items: start center;
-    background: var(--bg);
-    color: var(--ink);
+    background: linear-gradient(135deg, #0b3d91, #1565c0 60%, #42a5f5);    color: var(--ink);
     font-family: "Segoe UI", Tahoma, Arial, sans-serif;
     padding: 32px 20px;
   }
@@ -33,7 +32,7 @@
     border-radius: 10px;
     border: 1px solid var(--line);
   }
-  h1 { margin: 0 0 6px; font-size: 1.5rem; }
+  h1 { margin: 0 0 6px; font-size: 1.5rem; color: #0b3d91; }
   h2 { margin: 30px 0 12px; font-size: 1.1rem; }
   p  { margin: 0 0 22px; color: var(--muted); }
   label { display: block; margin-bottom: 8px; font-weight: 600; }
@@ -68,7 +67,7 @@
     border-radius: 8px;
     cursor: pointer;
   }
-  .primary:hover { background: #0b5646; }
+  .primary:hover { background: #082d6b; }
   #msg { margin-top: 12px; min-height: 1.4em; font-weight: 600; color: var(--accent); }
   #msg.error { color: var(--danger); }
 
@@ -120,7 +119,6 @@
   <button type="button" class="primary" id="add">Create service</button>
   <div id="msg" aria-live="polite"></div>
 
-  <h2>Existing services</h2>
   <ul id="list"></ul>
 </main>
 
