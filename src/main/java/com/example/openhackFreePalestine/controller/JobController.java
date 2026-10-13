@@ -22,20 +22,20 @@ public class JobController {
 
     @PostMapping
     public ResponseEntity<JobResponseDto> postJobAndTime(@RequestBody JobRequestDto jobRequestDto) {
-        return ResponseEntity.status(HttpStatus.CREATED).body(jobService.postJobAndTime(jobRequestDto));
+        return ResponseEntity.status(HttpStatus.CREATED).body(jobService.postJob(jobRequestDto));
 
     }
 
     @DeleteMapping("/{jobId}")
-    public ResponseEntity<Void> postJobAndTime(@PathVariable Long jobId) {
-        jobService.deleteJobAndTime(jobId);
+    public ResponseEntity<Void> deleteJobById(@PathVariable Long jobId) {
+        jobService.deleteJobById(jobId);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
 
     }
 
     @GetMapping
-    public ResponseEntity<List<JobResponseDto>> getJobAndTimes() {
-        return ResponseEntity.ok(jobService.getJobAndTimes());
+    public ResponseEntity<List<JobResponseDto>> getAllJobs() {
+        return ResponseEntity.ok(jobService.getAllJobs());
     }
 
 

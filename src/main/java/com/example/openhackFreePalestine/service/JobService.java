@@ -21,14 +21,14 @@ public class JobService {
         this.myMapper = myMapper;
     }
 
-    public JobResponseDto postJobAndTime(JobRequestDto jobRequestDto) {
+    public JobResponseDto postJob(JobRequestDto jobRequestDto) {
         return myMapper.toJobAndTimeResponseDto(
                 jobRepository.save(
                         myMapper.toJobAndTime(jobRequestDto)));
     }
 
 
-    public void deleteJobAndTime(Long jobId) {
+    public void deleteJobById(Long jobId) {
         if (!jobRepository.existsById(jobId))
             throw new ResourceNotFoundException("Job and time with id " + jobId + " does not exist", JobService.class.getSimpleName());
 
@@ -38,7 +38,7 @@ public class JobService {
     }
 
 
-    public List<JobResponseDto> getJobAndTimes() {
+    public List<JobResponseDto> getAllJobs() {
         return jobRepository.findAll().stream()
                 .map(myMapper::toJobAndTimeResponseDto)
                 .toList();
