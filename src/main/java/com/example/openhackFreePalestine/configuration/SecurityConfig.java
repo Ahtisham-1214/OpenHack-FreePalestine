@@ -43,10 +43,10 @@ public class SecurityConfig {
                         ).permitAll()
 
                         // Admin exclusive views and API endpoints
-                        .requestMatchers("/admin/**", "/dashboard.html", "/api/admin/**").hasRole("ADMIN")
+//                        .requestMatchers("/admin/**", "/dashboard.html", "/api/admin/**").hasRole("ADMIN")
 
                         // Everything else requires authentication
-                        .anyRequest().authenticated()
+                        .anyRequest().permitAll()
                 )
 
                 // ================= SESSION MANAGEMENT =================

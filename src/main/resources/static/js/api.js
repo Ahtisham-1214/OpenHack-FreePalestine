@@ -81,7 +81,7 @@ async function apiRequest(endpoint, options = {}) {
         // --- NEW: Handle Session Timeout ---
         if (response.status === 401) {
             if (!isSilent) {
-                Toast.error("Your session has expired. Redirecting to login...", "Session Expired");
+                Toast.error("Invalid Credentials.", "Invalid Credentials");
                 setTimeout(() => {
                     window.location.href = '/login.html';
                 }, 1500); // Give the user 1.5 seconds to read the toast before redirecting
