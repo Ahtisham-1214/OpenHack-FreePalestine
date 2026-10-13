@@ -1,0 +1,450 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Bank Login</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: "Segoe UI", Arial, sans-serif;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, #0b3d91, #1565c0 60%, #42a5f5);
+    padding: 16px;
+  }
+
+  .card {
+    background: #fff;
+    width: 100%;
+    max-width: 400px;
+    border-radius: 14px;
+    padding: 36px 32px;
+    box-shadow: 0 12px 40px rgba(0,0,0,.25);
+  }
+
+  .logo {
+    text-align: center;
+    font-size: 26px;
+    font-weight: 700;
+    color: #0b3d91;
+    margin-bottom: 6px;
+  }
+  .subtitle {
+    text-align: center;
+    color: #666;
+    font-size: 14px;
+    margin-bottom: 28px;
+  }
+
+  .field { margin-bottom: 18px; }
+  label {
+    display: block;
+    font-size: 13px;
+    font-weight: 600;
+    color: #333;
+    margin-bottom: 6px;
+  }
+  .input-wrap { position: relative; }
+  input {
+    width: 100%;
+    padding: 12px 14px;
+    border: 1.5px solid #ccd3dd;
+    border-radius: 8px;
+    font-size: 15px;
+    outline: none;
+    transition: border-color .2s, box-shadow .2s;
+  }
+  input:focus {
+    border-color: #1565c0;
+    box-shadow: 0 0 0 3px rgba(21,101,192,.15);
+  }
+  input.invalid { border-color: #d32f2f; }
+  input.valid { border-color: #2e7d32; }
+  .error {
+    color: #d32f2f;
+    font-size: 12px;
+    margin-top: 5px;
+    min-height: 14px;
+  }
+
+  .toggle {
+    position: absolute;
+    right: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    color: #1565c0;
+    font-size: 13px;
+    cursor: pointer;
+  }
+
+  .row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 13px;
+    margin-bottom: 22px;
+  }
+  .row label { display: flex; align-items: center; gap: 6px; font-weight: 400; margin: 0; }
+  .row input { width: auto; }
+  a { color: #1565c0; text-decoration: none; cursor: pointer; }
+  a:hover { text-decoration: underline; }
+
+  .btn {
+    width: 100%;
+    padding: 13px;
+    background: #0b3d91;
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background .2s;
+  }
+  .btn:hover { background: #082d6b; }
+  .btn:disabled { background: #90a4c4; cursor: not-allowed; }
+
+  .message {
+    text-align: center;
+    font-size: 13px;
+    margin-top: 14px;
+    min-height: 18px;
+  }
+  .message.ok { color: #2e7d32; }
+  .message.fail { color: #d32f2f; }
+
+  .switch {
+    text-align: center;
+    font-size: 13px;
+    color: #555;
+    margin-top: 20px;
+  }
+
+  .secure {
+    text-align: center;
+    font-size: 12px;
+    color: #888;
+    margin-top: 22px;
+  }
+
+  /* Forgot password modal */
+  .overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,.55);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    padding: 16px;
+  }
+  .overlay.show { display: flex; }
+  .modal {
+    background: #fff;
+    border-radius: 12px;
+    padding: 28px;
+    width: 100%;
+    max-width: 380px;
+  }
+  .modal h2 { color: #0b3d91; font-size: 20px; margin-bottom: 8px; }
+  .modal p { font-size: 14px; color: #555; margin-bottom: 18px; }
+  .modal .actions { display: flex; gap: 10px; margin-top: 6px; }
+  .btn.secondary { background: #e3e8ef; color: #333; }
+  .btn.secondary:hover { background: #d0d7e2; }
+</style>
+</head>
+<body>
+
+<div class="card">
+  <div class="logo">My Bank</div>
+  <div class="subtitle">Login to your account</div>
+
+  <form id="loginForm" novalidate>
+    <div class="field">
+      <label for="email">Email</label>
+      <input type="email" id="email" placeholder="Enter your email" autocomplete="username" maxlength="254">
+      <div class="error" id="emailError"></div>
+    </div>
+
+    <div class="field">
+      <label for="password">Password</label>
+      <div class="input-wrap">
+        <input type="password" id="password" placeholder="Enter your password" autocomplete="current-password" maxlength="128">
+        <button type="button" class="toggle" id="togglePwd">Show</button>
+      </div>
+      <div class="error" id="passwordError"></div>
+    </div>
+
+    <div class="row">
+      <label><input type="checkbox" id="remember"> Remember me</label>
+      <a id="forgotLink">Forgot password?</a>
+    </div>
+
+    <button type="submit" class="btn" id="loginBtn">Login</button>
+    <div class="message" id="loginMsg"></div>
+  </form>
+
+  <div class="switch">Don't have an account? <a href="register.html">Register</a></div>
+  <div class="secure">🔒 Your information is secure</div>
+</div>
+
+<!-- Forgot Password Modal -->
+<div class="overlay" id="forgotModal">
+  <div class="modal">
+    <h2>Reset Password</h2>
+    <p>Enter your registered email and choose a new password.</p>
+    <form id="forgotForm" novalidate>
+      <div class="field">
+        <label for="resetEmail">Email</label>
+        <input type="email" id="resetEmail" placeholder="Enter your registered email" maxlength="254">
+        <div class="error" id="resetEmailError"></div>
+      </div>
+
+      <div class="field">
+        <label for="newPassword">New Password</label>
+        <div class="input-wrap">
+          <input type="password" id="newPassword" placeholder="Enter new password" autocomplete="new-password" maxlength="64">
+          <button type="button" class="toggle" id="toggleNewPwd">Show</button>
+        </div>
+        <div class="error" id="newPasswordError"></div>
+      </div>
+
+      <div class="field">
+        <label for="confirmPassword">Confirm Password</label>
+        <div class="input-wrap">
+          <input type="password" id="confirmPassword" placeholder="Re-enter new password" autocomplete="new-password" maxlength="64">
+          <button type="button" class="toggle" id="toggleConfirmPwd">Show</button>
+        </div>
+        <div class="error" id="confirmPasswordError"></div>
+      </div>
+
+      <div class="actions">
+        <button type="button" class="btn secondary" id="closeModal">Cancel</button>
+        <button type="submit" class="btn" id="resetBtn">Reset Password</button>
+      </div>
+      <div class="message" id="resetMsg"></div>
+    </form>
+  </div>
+</div>
+
+<script>
+  /* =========================================================
+     VALIDATION RULES (all handled on the frontend)
+     Each validator returns an error string, or '' if valid.
+     ========================================================= */
+  const EMAIL_REGEX = /^[A-Za-z0-9._%+-]+@[A-Za-z0-9-]+(\.[A-Za-z0-9-]+)*\.[A-Za-z]{2,}$/;
+
+  const validate = {
+    email(value) {
+      if (!value) return 'Email is required';
+      if (/\s/.test(value)) return 'Email must not contain spaces';
+      if (value.length > 254) return 'Email is too long';
+      if (!value.includes('@')) return 'Email must contain "@"';
+      const [local] = value.split('@');
+      if (local.length > 64) return 'Part before "@" is too long';
+      if (value.includes('..')) return 'Email must not contain consecutive dots';
+      if (local.startsWith('.') || local.endsWith('.')) return 'Email must not start or end with a dot before "@"';
+      if (!EMAIL_REGEX.test(value)) return 'Enter a valid email address (e.g. name@example.com)';
+      return '';
+    },
+
+    // Login only needs to know a password was entered
+    // (the server decides if it is correct)
+    password(value) {
+      if (!value) return 'Password is required';
+      return '';
+    },
+
+    // Strong rules, used only when SETTING a new password (reset form)
+    newPassword(value) {
+      if (!value) return 'Password is required';
+      if (/\s/.test(value)) return 'Password must not contain spaces';
+      if (value.length < 8) return 'Password must be at least 8 characters';
+      if (value.length > 64) return 'Password must be 64 characters or fewer';
+      if (!/[a-z]/.test(value)) return 'Password must include a lowercase letter';
+      if (!/[A-Z]/.test(value)) return 'Password must include an uppercase letter';
+      if (!/[0-9]/.test(value)) return 'Password must include a number';
+      if (!/[^A-Za-z0-9]/.test(value)) return 'Password must include a special character (e.g. @, #, !)';
+      return '';
+    },
+
+    confirm(value, original) {
+      if (!value) return 'Please confirm your password';
+      if (value !== original) return 'Passwords do not match';
+      return '';
+    }
+  };
+
+  /* ---------------- Helpers ---------------- */
+  function showResult(input, errEl, message) {
+    errEl.textContent = message;
+    input.classList.toggle('invalid', !!message);
+    input.classList.toggle('valid', !message && input.value !== '');
+    return !message;
+  }
+
+  function bindToggle(button, input) {
+    button.addEventListener('click', () => {
+      const hidden = input.type === 'password';
+      input.type = hidden ? 'text' : 'password';
+      button.textContent = hidden ? 'Hide' : 'Show';
+    });
+  }
+
+  // Validate on blur first, then live while typing
+  function liveValidate(input, check) {
+    let touched = false;
+    input.addEventListener('blur', () => { touched = true; check(); });
+    input.addEventListener('input', () => { if (touched) check(); });
+  }
+
+  /* ---------------- Login ---------------- */
+  const loginForm  = document.getElementById('loginForm');
+  const emailInput = document.getElementById('email');
+  const pwdInput   = document.getElementById('password');
+  const emailError = document.getElementById('emailError');
+  const pwdError   = document.getElementById('passwordError');
+  const loginMsg   = document.getElementById('loginMsg');
+  const loginBtn   = document.getElementById('loginBtn');
+
+  const checkEmail    = () => showResult(emailInput, emailError, validate.email(emailInput.value.trim()));
+  const checkPassword = () => showResult(pwdInput, pwdError, validate.password(pwdInput.value));
+
+  bindToggle(document.getElementById('togglePwd'), pwdInput);
+  liveValidate(emailInput, checkEmail);
+  liveValidate(pwdInput, checkPassword);
+
+  loginForm.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    loginMsg.textContent = '';
+    loginMsg.className = 'message';
+
+    // Run both checks so every error shows at once
+    const emailOk = checkEmail();
+    const pwdOk   = checkPassword();
+    if (!emailOk || !pwdOk) return;
+
+    const email = emailInput.value.trim().toLowerCase();
+    const password = pwdInput.value;
+
+    loginBtn.disabled = true;
+    loginBtn.textContent = 'Signing in...';
+
+    try {
+      // Input is already validated, so the server only needs to check the credentials.
+      // TODO: Replace with your server URL.
+      const res = await fetch('/api/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, password })
+      });
+
+      if (res.ok) {
+        loginMsg.textContent = 'Login successful!';
+        loginMsg.classList.add('ok');
+        // window.location.href = '/dashboard';
+      } else {
+        loginMsg.textContent = 'Incorrect email or password';
+        loginMsg.classList.add('fail');
+      }
+    } catch (err) {
+      loginMsg.textContent = 'Unable to connect to the server';
+      loginMsg.classList.add('fail');
+    } finally {
+      loginBtn.disabled = false;
+      loginBtn.textContent = 'Login';
+    }
+  });
+
+  /* ---------------- Forgot / Reset Password ---------------- */
+  const modal           = document.getElementById('forgotModal');
+  const forgotForm      = document.getElementById('forgotForm');
+  const resetEmail      = document.getElementById('resetEmail');
+  const newPassword     = document.getElementById('newPassword');
+  const confirmPassword = document.getElementById('confirmPassword');
+  const resetEmailError = document.getElementById('resetEmailError');
+  const newPwdError     = document.getElementById('newPasswordError');
+  const confirmPwdError = document.getElementById('confirmPasswordError');
+  const resetMsg        = document.getElementById('resetMsg');
+  const resetBtn        = document.getElementById('resetBtn');
+
+  const checkResetEmail = () => showResult(resetEmail, resetEmailError, validate.email(resetEmail.value.trim()));
+  const checkNewPwd     = () => {
+    const ok = showResult(newPassword, newPwdError, validate.newPassword(newPassword.value));
+    if (confirmPassword.value) checkConfirmPwd(); // keep confirm field in sync
+    return ok;
+  };
+  const checkConfirmPwd = () => showResult(confirmPassword, confirmPwdError, validate.confirm(confirmPassword.value, newPassword.value));
+
+  bindToggle(document.getElementById('toggleNewPwd'), newPassword);
+  bindToggle(document.getElementById('toggleConfirmPwd'), confirmPassword);
+  liveValidate(resetEmail, checkResetEmail);
+  liveValidate(newPassword, checkNewPwd);
+  liveValidate(confirmPassword, checkConfirmPwd);
+
+  document.getElementById('forgotLink').addEventListener('click', () => {
+    modal.classList.add('show');
+    resetEmail.value = emailInput.value;
+    resetEmail.focus();
+  });
+
+  function closeModal() {
+    modal.classList.remove('show');
+    forgotForm.reset();
+    resetMsg.textContent = '';
+    resetMsg.className = 'message';
+    [[resetEmail, resetEmailError], [newPassword, newPwdError], [confirmPassword, confirmPwdError]]
+      .forEach(([input, err]) => { err.textContent = ''; input.classList.remove('invalid', 'valid'); });
+  }
+  document.getElementById('closeModal').addEventListener('click', closeModal);
+  modal.addEventListener('click', (e) => { if (e.target === modal) closeModal(); });
+  document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeModal(); });
+
+  forgotForm.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    resetMsg.textContent = '';
+    resetMsg.className = 'message';
+
+    const emailOk   = checkResetEmail();
+    const newOk     = checkNewPwd();
+    const confirmOk = checkConfirmPwd();
+    if (!emailOk || !newOk || !confirmOk) return;
+
+    resetBtn.disabled = true;
+    resetBtn.textContent = 'Saving...';
+
+    try {
+      // TODO: Replace with your server URL.
+      const res = await fetch('/api/reset-password', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          email: resetEmail.value.trim().toLowerCase(),
+          newPassword: newPassword.value
+        })
+      });
+
+      if (res.ok) {
+        resetMsg.textContent = 'Password updated successfully. You can now log in.';
+        resetMsg.classList.add('ok');
+        setTimeout(closeModal, 2000);
+      } else {
+        resetMsg.textContent = 'Could not reset password. Please try again.';
+        resetMsg.classList.add('fail');
+      }
+    } catch (err) {
+      resetMsg.textContent = 'Unable to connect to the server';
+      resetMsg.classList.add('fail');
+    } finally {
+      resetBtn.disabled = false;
+      resetBtn.textContent = 'Reset Password';
+    }
+  });
+</script>
+</body>
+</html>

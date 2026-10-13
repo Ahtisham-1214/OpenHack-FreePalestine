@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Bank Register</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: "Segoe UI", Arial, sans-serif;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, #0b3d91, #1565c0 60%, #42a5f5);
+    padding: 16px;
+  }
+
+  .card {
+    background: #fff;
+    width: 100%;
+    max-width: 400px;
+    border-radius: 14px;
+    padding: 36px 32px;
+    box-shadow: 0 12px 40px rgba(0,0,0,.25);
+  }
+
+  .logo {
+    text-align: center;
+    font-size: 26px;
+    font-weight: 700;
+    color: #0b3d91;
+    margin-bottom: 6px;
+  }
+  .subtitle {
+    text-align: center;
+    color: #666;
+    font-size: 14px;
+    margin-bottom: 28px;
+  }
+
+  .field { margin-bottom: 18px; }
+  label {
+    display: block;
+    font-size: 13px;
+    font-weight: 600;
+    color: #333;
+    margin-bottom: 6px;
+  }
+  .input-wrap { position: relative; }
+  input {
+    width: 100%;
+    padding: 12px 14px;
+    border: 1.5px solid #ccd3dd;
+    border-radius: 8px;
+    font-size: 15px;
+    outline: none;
+    transition: border-color .2s, box-shadow .2s;
+  }
+  input:focus {
+    border-color: #1565c0;
+    box-shadow: 0 0 0 3px rgba(21,101,192,.15);
+  }
+  input.invalid { border-color: #d32f2f; }
+  input.valid { border-color: #2e7d32; }
+  .error {
+    color: #d32f2f;
+    font-size: 12px;
+    margin-top: 5px;
+    min-height: 14px;
+  }
+
+  .toggle {
+    position: absolute;
+    right: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    color: #1565c0;
+    font-size: 13px;
+    cursor: pointer;
+  }
+
+  a { color: #1565c0; text-decoration: none; cursor: pointer; }
+  a:hover { text-decoration: underline; }
+
+  .btn {
+    width: 100%;
+    padding: 13px;
+    background: #0b3d91;
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background .2s;
+    margin-top: 4px;
+  }
+  .btn:hover { background: #082d6b; }
+  .btn:disabled { background: #90a4c4; cursor: not-allowed; }
+
+  .message {
+    text-align: center;
+    font-size: 13px;
+    margin-top: 14px;
+    min-height: 18px;
+  }
+  .message.ok { color: #2e7d32; }
+  .message.fail { color: #d32f2f; }
+
+  .switch {
+    text-align: center;
+    font-size: 13px;
+    color: #555;
+    margin-top: 20px;
+  }
+
+  .secure {
+    text-align: center;
+    font-size: 12px;
+    color: #888;
+    margin-top: 22px;
+  }
+</style>
+</head>
+<body>
+
+<div class="card">
+  <div class="logo">My Bank</div>
+  <div class="subtitle">Create your account</div>
+
+  <form id="registerForm" novalidate>
+    <div class="field">
+      <label for="name">Name</label>
+      <input type="text" id="name" placeholder="Enter your full name" autocomplete="name">
+      <div class="error" id="nameError"></div>
+    </div>
+
+    <div class="field">
+      <label for="email">Email</label>
+      <input type="email" id="email" placeholder="Enter your email" autocomplete="username">
+      <div class="error" id="emailError"></div>
+    </div>
+
+    <div class="field">
+      <label for="password">Password</label>
+      <div class="input-wrap">
+        <input type="password" id="password" placeholder="Create a password" autocomplete="new-password">
+        <button type="button" class="toggle" id="togglePwd">Show</button>
+      </div>
+      <div class="error" id="passwordError"></div>
+    </div>
+
+    <button type="submit" class="btn" id="registerBtn">Register</button>
+    <div class="message" id="registerMsg"></div>
+  </form>
+
+  <div class="switch">Already have an account? <a href="login.html">Login</a></div>
+  <div class="secure">🔒 Your information is secure</div>
+</div>
+
+<script>
+  /* =========================================================
+     VALIDATION RULES (all handled on the frontend)
+     Each validator returns an error string, or '' if valid.
+     ========================================================= */
+  const EMAIL_REGEX = /^[A-Za-z0-9._%+-]+@[A-Za-z0-9-]+(\.[A-Za-z0-9-]+)*\.[A-Za-z]{2,}$/;
+
+  const validate = {
+    name(value) {
+      if (!value) return 'Name is required';
+      if (value.length < 2) return 'Name must be at least 2 characters';
+      if (value.length > 50) return 'Name must be 50 characters or fewer';
+      if (!/^[A-Za-z][A-Za-z .'-]*$/.test(value)) return 'Name can only contain letters, spaces, . \' and -';
+      return '';
+    },
+
+    email(value) {
+      if (!value) return 'Email is required';
+      if (/\s/.test(value)) return 'Email must not contain spaces';
+      if (value.length > 254) return 'Email is too long';
+      if (!value.includes('@')) return 'Email must contain "@"';
+      const [local] = value.split('@');
+      if (local.length > 64) return 'Part before "@" is too long';
+      if (value.includes('..')) return 'Email must not contain consecutive dots';
+      if (local.startsWith('.') || local.endsWith('.')) return 'Email must not start or end with a dot before "@"';
+      if (!EMAIL_REGEX.test(value)) return 'Enter a valid email address (e.g. name@example.com)';
+      return '';
+    },
+
+    password(value) {
+      if (!value) return 'Password is required';
+      if (/\s/.test(value)) return 'Password must not contain spaces';
+      if (value.length < 8) return 'Password must be at least 8 characters';
+      if (value.length > 64) return 'Password must be 64 characters or fewer';
+      if (!/[a-z]/.test(value)) return 'Password must include a lowercase letter';
+      if (!/[A-Z]/.test(value)) return 'Password must include an uppercase letter';
+      if (!/[0-9]/.test(value)) return 'Password must include a number';
+      if (!/[^A-Za-z0-9]/.test(value)) return 'Password must include a special character (e.g. @, #, !)';
+      return '';
+    }
+  };
+
+  // Validate on blur first, then live while typing
+  function liveValidate(input, check) {
+    let touched = false;
+    input.addEventListener('blur', () => { touched = true; check(); });
+    input.addEventListener('input', () => { if (touched) check(); });
+  }
+
+  const form        = document.getElementById('registerForm');
+  const nameInput   = document.getElementById('name');
+  const emailInput  = document.getElementById('email');
+  const pwdInput    = document.getElementById('password');
+  const nameError   = document.getElementById('nameError');
+  const emailError  = document.getElementById('emailError');
+  const pwdError    = document.getElementById('passwordError');
+  const registerMsg = document.getElementById('registerMsg');
+  const registerBtn = document.getElementById('registerBtn');
+  const togglePwd   = document.getElementById('togglePwd');
+
+  function setError(input, errEl, text) {
+    errEl.textContent = text;
+    input.classList.toggle('invalid', !!text);
+    input.classList.toggle('valid', !text && input.value !== '');
+    return !text;
+  }
+
+  const checkName     = () => setError(nameInput, nameError, validate.name(nameInput.value.trim()));
+  const checkEmail    = () => setError(emailInput, emailError, validate.email(emailInput.value.trim()));
+  const checkPassword = () => setError(pwdInput, pwdError, validate.password(pwdInput.value));
+
+  liveValidate(nameInput, checkName);
+  liveValidate(emailInput, checkEmail);
+  liveValidate(pwdInput, checkPassword);
+
+  // Show / hide password
+  togglePwd.addEventListener('click', () => {
+    const hidden = pwdInput.type === 'password';
+    pwdInput.type = hidden ? 'text' : 'password';
+    togglePwd.textContent = hidden ? 'Hide' : 'Show';
+  });
+
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    registerMsg.textContent = '';
+    registerMsg.className = 'message';
+
+    // Run all checks so every error shows at once
+    const nameOk  = checkName();
+    const emailOk = checkEmail();
+    const pwdOk   = checkPassword();
+    if (!nameOk || !emailOk || !pwdOk) return;
+
+    const name = nameInput.value.trim();
+    const email = emailInput.value.trim().toLowerCase();
+    const password = pwdInput.value;
+
+    registerBtn.disabled = true;
+    registerBtn.textContent = 'Creating account...';
+
+    try {
+      // TODO: Replace with your server URL.
+      // Passwords must be hashed and stored securely on the server (over HTTPS).
+      const res = await fetch('/api/register', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ name, email, password })
+      });
+
+      if (res.ok) {
+        registerMsg.textContent = 'Account created! Redirecting to login...';
+        registerMsg.classList.add('ok');
+        setTimeout(() => { window.location.href = 'login.html'; }, 1500);
+      } else if (res.status === 409) {
+        registerMsg.textContent = 'An account with this email already exists';
+        registerMsg.classList.add('fail');
+      } else {
+        registerMsg.textContent = 'Registration failed. Please try again.';
+        registerMsg.classList.add('fail');
+      }
+    } catch (err) {
+      registerMsg.textContent = 'Unable to connect to the server';
+      registerMsg.classList.add('fail');
+    } finally {
+      registerBtn.disabled = false;
+      registerBtn.textContent = 'Register';
+    }
+  });
+</script>
+</body>
+</html>
