@@ -63,7 +63,7 @@ $$\text{Priority Score} = \text{ServiceTime} - (\text{WaitTime} \times 0.2)$$
 
 ## 🛠️ Technology Stack
 
-* **Backend:** Java 17, Spring Boot, Spring Security, Spring Data JPA / Hibernate, REST APIs.
+* **Backend:** Java 25, Spring Boot, Spring Security, Spring Data JPA / Hibernate, REST APIs.
 * **Database:** MySQL / H2 (Relational schema for tokens, jobs, and audit timestamps).
 * **Frontend:** HTML5, Tailwind CSS, FontAwesome icons, Vanilla JavaScript (`Fetch API`, dynamic DOM manipulation, polling loops).
 * **Security & Session:** Spring Security with role-based restrictions (`ADMIN`, `STAFF`) and permitted public static endpoints.
