@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>About Us | Free Palestine Bank</title>
+  <title>About & Documentation | Free Palestine Bank Queue System</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -26,13 +26,12 @@
       z-index: 0;
     }
 
-    /* grid that keeps sliding diagonally, faded towards the edges */
     .bg-grid {
       position: absolute;
       inset: 0;
       background-image:
-        linear-gradient(rgba(8, 45, 107, 0.10) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(8, 45, 107, 0.10) 1px, transparent 1px);
+              linear-gradient(rgba(8, 45, 107, 0.10) 1px, transparent 1px),
+              linear-gradient(90deg, rgba(8, 45, 107, 0.10) 1px, transparent 1px);
       background-size: 56px 56px;
       animation: grid-move 5s linear infinite;
       -webkit-mask-image: radial-gradient(ellipse at center, #000 30%, transparent 85%);
@@ -43,7 +42,6 @@
       to   { background-position: 56px 56px; }
     }
 
-    /* three waves at the bottom flowing at different speeds */
     .wave {
       position: absolute;
       left: 0;
@@ -64,7 +62,6 @@
       .bg-grid, .wave { animation: none; }
     }
 
-    /* Palestine flag stripe */
     .flag-stripe {
       height: 6px;
       background: linear-gradient(90deg, #000 0 33.33%, #fff 33.33% 66.66%, #007a3d 66.66% 100%);
@@ -77,7 +74,7 @@
       clip-path: polygon(0 0, 100% 50%, 0 100%);
     }
 
-    /* ================= Glass cards (Uiverse by codebykay101) ================= */
+    /* Glass Cards */
     .glass-row {
       position: relative;
       display: flex;
@@ -97,7 +94,6 @@
       justify-content: center;
       align-items: center;
       text-align: center;
-      /* keep the content inside the part of the card that is not covered by the next card */
       padding: 0 45px 44px 0;
       transition: 0.5s;
       border-radius: 10px;
@@ -117,7 +113,6 @@
     .glass-row .glass:last-child::before,
     .glass-row:hover .glass::before { padding-right: 0; }
 
-    /* bottom bar = member name */
     .glass-row .glass::before {
       content: attr(data-text);
       position: absolute;
@@ -125,7 +120,7 @@
       width: 100%;
       height: 44px;
       box-sizing: border-box;
-      padding-right: 45px;          /* same offset as the card content */
+      padding-right: 45px;
       transition: padding 0.5s;
       background: rgba(255, 255, 255, 0.08);
       display: flex;
@@ -157,7 +152,6 @@
       color: rgba(255, 255, 255, 0.7);
     }
 
-    /* Phones and tablets: no overlap, stacked cards */
     @media (max-width: 800px) {
       .glass-row { flex-direction: column; gap: 20px; }
       .glass-row .glass,
@@ -176,55 +170,140 @@
 </head>
 <body class="bg-white text-slate-800 min-h-screen selection:bg-blue-600 selection:text-white">
 
-  <div class="stage min-h-screen">
-    <div class="bg-anim" aria-hidden="true"><div class="bg-grid"></div><div class="wave w3"></div><div class="wave w2"></div><div class="wave w1"></div></div>
-    <div class="relative z-10 max-w-5xl mx-auto px-6 pt-14 pb-16 text-center">
+<div class="stage min-h-screen">
+  <div class="bg-anim" aria-hidden="true"><div class="bg-grid"></div><div class="wave w3"></div><div class="wave w2"></div><div class="wave w1"></div></div>
 
+  <div class="relative z-10 max-w-5xl mx-auto px-6 pt-14 pb-20">
+
+    <!-- Header Section -->
+    <div class="text-center">
       <img src="logo.png" alt="Free Palestine Bank" class="w-24 h-24 rounded-full bg-white object-contain mx-auto mb-5 shadow-xl ring-1 ring-slate-200">
       <h1 class="text-4xl sm:text-5xl font-extrabold tracking-tight text-[#082d6b]">Team Free Palestine</h1>
-      <p class="mt-4 text-slate-500 text-base sm:text-lg max-w-xl mx-auto">
-        We built a smarter token and queue system so nobody waits in line without knowing their turn.
+      <p class="mt-4 text-slate-600 text-base sm:text-lg max-w-xl mx-auto">
+        SC-03 | Public Service Queue and Wait-Time Optimizer — Built for Free Palestine Bank
       </p>
+    </div>
 
-      <!-- Team: hover the row to fan the cards out -->
-      <div class="glass-row mt-16 mb-14">
+    <!-- Team Members Row -->
+    <div class="glass-row mt-16 mb-14">
 
-        <a href="https://github.com/Ahtisham-1214" target="_blank" rel="noopener noreferrer">
+      <a href="https://github.com/Ahtisham-1214" target="_blank" rel="noopener noreferrer">
         <div class="glass" style="--r:-15" data-text="Muhammad Ahtisham">
           <img class="photo" src="member1.jpg" alt="Muhammad Ahtisham">
           <div class="dept">Emerging Sciences & Technology-AI</div>
           <div class="uni">Aror University of Art, Architecture, Design and Heritage</div>
         </div>
-        </a>
+      </a>
 
-        <a href="https://github.com/Ghufran-Arain55" target="_blank" rel="noopener noreferrer">
+      <a href="https://github.com/Ghufran-Arain55" target="_blank" rel="noopener noreferrer">
         <div class="glass" style="--r:5" data-text="Ghufran Arain">
           <img class="photo" src="member2.jpg" alt="Ghufran Arain">
           <div class="dept">Emerging Sciences & Technology-AI</div>
           <div class="uni">Aror University of Art, Architecture, Design and Heritage</div>
         </div>
-        </a>
+      </a>
 
-        <a href="https://github.com/i-AneesAhmed" target="_blank" rel="noopener noreferrer">
+      <a href="https://github.com/i-AneesAhmed" target="_blank" rel="noopener noreferrer">
         <div class="glass" style="--r:25" data-text="Anees Ahmed">
-        <img class="photo" src="member3.jpg" alt="Anees Ahmed">
+          <img class="photo" src="member3.jpg" alt="Anees Ahmed">
           <div class="dept">Emerging Sciences & Technology-AI</div>
           <div class="uni">Aror University of Art, Architecture, Design and Heritage</div>
         </div>
-        </a>
-
-      </div>
-
-      <!-- GitHub -->
-      <a href="https://github.com/Ahtisham-1214/OpenHack-FreePalestine" target="_blank" rel="noopener noreferrer"
-         class="inline-flex items-center justify-center gap-2 py-3.5 px-8 bg-[#082d6b] hover:bg-[#061f4a] text-white font-semibold rounded-xl shadow-md shadow-[#082d6b]/20 active:scale-[0.99] transition-all duration-150 text-sm">
-        <i class="fa-brands fa-github text-lg"></i>
-        <span>View on GitHub</span>
       </a>
 
     </div>
+
+    <!-- GitHub Link -->
+    <div class="text-center mb-16">
+      <a href="https://github.com/Ahtisham-1214/OpenHack-FreePalestine" target="_blank" rel="noopener noreferrer"
+         class="inline-flex items-center justify-center gap-2 py-3.5 px-8 bg-[#082d6b] hover:bg-[#061f4a] text-white font-semibold rounded-xl shadow-md shadow-[#082d6b]/20 active:scale-[0.99] transition-all duration-150 text-sm">
+        <i class="fa-brands fa-github text-lg"></i>
+        <span>View Source on GitHub</span>
+      </a>
+    </div>
+
+    <!-- ================= PROJECT DOCUMENTATION (SC-03) - TRANSPARENT GLASS CARDS ================= -->
+    <div class="space-y-8 text-left">
+
+      <!-- Challenge Context & Problem -->
+      <div class="bg-white/70 border border-white/80 backdrop-blur-md rounded-2xl p-8 shadow-lg shadow-slate-200/30">
+        <div class="w-10 h-10 rounded-xl bg-blue-500/10 text-blue-700 flex items-center justify-center mb-4 text-lg font-semibold">
+          <i class="fa-solid fa-flag"></i>
+        </div>
+        <h2 class="text-2xl font-bold text-slate-900 mb-3">SC-03 Challenge & Problem Statement</h2>
+        <p class="text-slate-700 leading-relaxed text-sm sm:text-base">
+          Long and unpredictable queues at service counters, banks, and hospitals waste citizens' time and make it difficult for staff to manage customer demand efficiently.
+        </p>
+        <p class="text-slate-700 leading-relaxed text-sm sm:text-base mt-3">
+          <strong>The Solution:</strong> We built an intelligent queue system for <strong>Free Palestine Bank</strong> to eliminate the frustration of waiting in physical lines without knowing how long it will take. Using a simulated single-counter model, our platform seamlessly manages demand and forecasting.
+        </p>
+      </div>
+
+      <!-- System Architecture & Roles -->
+      <div class="bg-white/70 border border-white/80 backdrop-blur-md rounded-2xl p-8 shadow-lg shadow-slate-200/30">
+        <div class="w-10 h-10 rounded-xl bg-purple-500/10 text-purple-700 flex items-center justify-center mb-4 text-lg font-semibold">
+          <i class="fa-solid fa-users-gear"></i>
+        </div>
+        <h2 class="text-2xl font-bold text-slate-900 mb-3">Role-Based Architecture & Workflow</h2>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-6 mt-6">
+          <div class="bg-white/50 border border-white/60 p-5 rounded-xl backdrop-blur-sm">
+            <h3 class="font-bold text-slate-900 text-base mb-2 flex items-center gap-2">
+              <i class="fa-solid fa-user-shield text-blue-700"></i> Counter Operators & Admins
+            </h3>
+            <p class="text-slate-700 text-sm leading-relaxed">
+              Counter personnel must log in securely. Admins can register additional counter staff. Operators configure the service catalog (defining bank tasks such as <em>Cash Deposit</em> taking 1 minute or <em>Account Opening</em> taking 3 minutes). They oversee the live dashboard to advance tokens to <strong>SERVING</strong>, <strong>COMPLETED</strong>, or track user cancellations.
+            </p>
+          </div>
+
+          <div class="bg-white/50 border border-white/60 p-5 rounded-xl backdrop-blur-sm">
+            <h3 class="font-bold text-slate-900 text-base mb-2 flex items-center gap-2">
+              <i class="fa-solid fa-user text-emerald-700"></i> Citizens / Bank Customers
+            </h3>
+            <p class="text-slate-700 text-sm leading-relaxed">
+              Customers enjoy a completely frictionless experience—<strong>no login required</strong>. Users simply open the app via web or QR code scan, type their name, select a service, and instantly receive a digital token with live queue position tracking and wait-time countdowns.
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Scheduling Algorithm Explanation -->
+      <div class="bg-white/70 border border-white/80 backdrop-blur-md rounded-2xl p-8 shadow-lg shadow-slate-200/30">
+        <div class="w-10 h-10 rounded-xl bg-amber-500/10 text-amber-700 flex items-center justify-center mb-4 text-lg font-semibold">
+          <i class="fa-solid fa-calculator"></i>
+        </div>
+        <h2 class="text-2xl font-bold text-slate-900 mb-3">Queue Optimization: SJF + Aging Algorithm</h2>
+        <p class="text-slate-700 leading-relaxed text-sm sm:text-base">
+          To prevent bottlenecks where fast transactions get stuck behind lengthy requests, our backend uses Shortest Job First (SJF) combined with an aging factor:
+        </p>
+
+        <div class="my-5 p-4 bg-white/60 border border-white/80 rounded-xl font-mono text-xs sm:text-sm text-slate-900 shadow-inner">
+          Priority Score = ServiceTime - (WaitTime * 0.2)
+        </div>
+
+        <p class="text-slate-700 text-sm sm:text-base leading-relaxed">
+          Service durations defined by the banker during job creation directly feed this algorithm, allowing accurate wait-time estimation and fair queue reordering.
+        </p>
+      </div>
+
+      <!-- Tech Stack Badges -->
+      <div class="bg-white/70 border border-white/80 backdrop-blur-md rounded-2xl p-8 shadow-lg shadow-slate-200/30 text-center">
+        <h3 class="text-xl font-bold text-slate-900 mb-4">Technology Stack</h3>
+        <div class="flex flex-wrap justify-center gap-3 text-xs sm:text-sm font-semibold text-slate-800">
+          <span class="px-3.5 py-1.5 bg-white/60 border border-white/80 rounded-xl backdrop-blur-sm"><i class="fa-brands fa-java text-orange-600 mr-1.5"></i>Java & Spring Boot</span>
+          <span class="px-3.5 py-1.5 bg-white/60 border border-white/80 rounded-xl backdrop-blur-sm"><i class="fa-solid fa-database text-blue-600 mr-1.5"></i>Spring Data JPA / Hibernate</span>
+          <span class="px-3.5 py-1.5 bg-white/60 border border-white/80 rounded-xl backdrop-blur-sm"><i class="fa-solid fa-shield-halved text-emerald-600 mr-1.5"></i>Spring Security</span>
+          <span class="px-3.5 py-1.5 bg-white/60 border border-white/80 rounded-xl backdrop-blur-sm"><i class="fa-brands fa-css3-alt text-cyan-600 mr-1.5"></i>Tailwind CSS</span>
+          <span class="px-3.5 py-1.5 bg-white/60 border border-white/80 rounded-xl backdrop-blur-sm"><i class="fa-brands fa-js text-amber-600 mr-1.5"></i>Vanilla JavaScript & REST API</span>
+        </div>
+      </div>
+
+    </div>
+
   </div>
-  <div class="flag-stripe"></div>
+</div>
+
+<div class="flag-stripe"></div>
 
 </body>
 </html>
