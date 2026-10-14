@@ -211,6 +211,8 @@
 
 </footer>
 
+<script src="/js/toast.js"></script>
+<script src="/js/api.js"></script>
 <script>
   /* =========================================================
      VALIDATION RULES (all handled on the frontend)
@@ -295,26 +297,17 @@
     try {
       // TODO: Replace with your server URL.
       // Passwords must be hashed and stored securely on the server (over HTTPS).
-      const res = await fetch('/api/register', {
+      const res = await apiRequest('/api/auth/register', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ username, password })
       });
 
-      if (res.ok) {
-        registerMsg.textContent = 'Account created! Redirecting to login...';
-        registerMsg.classList.add('ok');
+        Toast.success('Account created! Redirecting to login', "Success");
         setTimeout(() => { window.location.href = 'login.html'; }, 1500);
-      } else if (res.status === 409) {
-        registerMsg.textContent = 'This username is already taken';
-        registerMsg.classList.add('fail');
-      } else {
-        registerMsg.textContent = 'Registration failed. Please try again.';
-        registerMsg.classList.add('fail');
-      }
+
     } catch (err) {
-      registerMsg.textContent = 'Unable to connect to the server';
-      registerMsg.classList.add('fail');
+      console.error(err);
     } finally {
       registerBtn.disabled = false;
       registerBtn.textContent = 'Register';
