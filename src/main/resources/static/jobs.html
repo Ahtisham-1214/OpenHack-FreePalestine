@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Admin - Manage Services</title>
+  <link rel="stylesheet" href="css/footer.css">
 <style>
   :root {
     --bg: #eef3f1;
@@ -153,7 +154,6 @@
     <label for="stime">Service time</label>
     <div class="time-row">
       <input type="number" id="stime" min="0.1" step="0.1" placeholder="e.g. 1.5">
-      <span>minutes</span>
     </div>
     <p class="hint">Use decimals for part minutes, for example 1 or 1.5.</p>
   </div>
@@ -163,6 +163,24 @@
 
   <ul id="list"></ul>
 </main>
+
+<!-- ================= DEVELOPER CREDIT ================= -->
+<footer class="developer-credit">
+
+  <a href="about.html" target="_blank" class="developer-link">
+
+    <img src="/logo.png"
+         alt="Free Palestine Team"
+         class="developer-photo">
+
+    <div class="developer-info">
+      <span class="developer-label">Team</span>
+      <strong class="developer-name">Free Palestine</strong>
+    </div>
+
+  </a>
+
+</footer>
 
 <!-- Include your toast and api wrappers first -->
 <script src="/js/toast.js"></script>

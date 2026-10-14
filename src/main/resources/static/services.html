@@ -7,6 +7,7 @@
   <script src="https://cdn.tailwindcss.com"></script>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="css/footer.css">
   <script>
     tailwind.config = {
       theme: {
@@ -21,6 +22,7 @@
   <style>
     body {
       font-family: 'Inter', sans-serif;
+        flex-direction: column;
     }
     .select-wrap select {
       appearance: none;
@@ -77,6 +79,24 @@ class="mt-8 w-full py-3.5 px-6 bg-[#082d6b] hover:bg-[#061f4a] text-white font-m
   <div id="result" aria-live="polite" class="mt-4 text-xs font-medium text-center text-slate-500 empty:mt-0"></div>
 
 </main>
+
+<!-- ================= DEVELOPER CREDIT ================= -->
+<footer class="developer-credit">
+
+    <a href="about.html" target="_blank" class="developer-link">
+
+        <img src="/logo.png"
+             alt="Free Palestine Team"
+             class="developer-photo">
+
+        <div class="developer-info">
+            <span class="developer-label">Team</span>
+            <strong class="developer-name">Free Palestine</strong>
+        </div>
+
+    </a>
+
+</footer>
 
 <!-- Include your Toast and API wrapper scripts -->
 <script src="/js/toast.js"></script>
