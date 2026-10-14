@@ -39,7 +39,12 @@ public class SecurityConfig {
                                 "/js/**",
                                 "/images/**",
                                 "/api/auth/**",
-                                "/qr.png"
+                                "/qr.png",
+                                "/about.html",
+                                "/logo.png",
+                                "/member1.jpg",
+                                "/member2.jpg",
+                                "/member3.jpg"
                         ).permitAll()
 
                         // Admin exclusive views and API endpoints
