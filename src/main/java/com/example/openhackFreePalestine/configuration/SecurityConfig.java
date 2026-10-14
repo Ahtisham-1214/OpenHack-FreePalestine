@@ -44,14 +44,19 @@ public class SecurityConfig {
                                 "/logo.png",
                                 "/member1.jpg",
                                 "/member2.jpg",
-                                "/member3.jpg"
+                                "/member3.jpg",
+                                "/services.html",
+                                "/services/**",
+                                "/services",
+                                "/jobs",
+                                "/jobs/**"
                         ).permitAll()
 
                         // Admin exclusive views and API endpoints
-//                        .requestMatchers("/admin/**", "/dashboard.html", "/api/admin/**").hasRole("ADMIN")
+                        .requestMatchers("/admin/**", "/dashboard.html", "/api/admin/**").hasRole("ADMIN")
 
                         // Everything else requires authentication
-                        .anyRequest().permitAll()
+                        .anyRequest().authenticated()
                 )
 
                 // ================= SESSION MANAGEMENT =================
