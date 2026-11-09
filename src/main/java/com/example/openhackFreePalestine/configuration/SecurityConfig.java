@@ -43,7 +43,7 @@ public class SecurityConfig {
                                 "/api/auth/**",
                                 "/qr.png",
                                 "/about.html",
-                                "/logo.png",
+                                "/logo.webp",
                                 "/member1.jpg",
                                 "/member2.jpg",
                                 "/member3.jpg",
