@@ -1,5 +1,6 @@
 package com.example.openhackFreePalestine.configuration;
 
+import jakarta.servlet.DispatcherType;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpStatus;
@@ -30,6 +31,7 @@ public class SecurityConfig {
         http
                 // ================= AUTHORIZATION RULES =================
                 .authorizeHttpRequests(auth -> auth
+                        .dispatcherTypeMatchers(DispatcherType.ERROR).permitAll()
                         // Public endpoints and static resources
                         .requestMatchers(
                                 "/",
@@ -49,7 +51,8 @@ public class SecurityConfig {
                                 "/services/**",
                                 "/services",
                                 "/jobs",
-                                "/jobs/**"
+                                "/jobs/**",
+                                "/favicon.ico"
                         ).permitAll()
 
                         // Admin exclusive views and API endpoints
