@@ -9,6 +9,8 @@ An Aeal-time token and queue optimization platform built for the **SC-03 Public 
 You can test the live deployment directly in your browser:
 🔗 **[https://free-palestine-openhack.loca.lt](https://free-palestine-openhack.loca.lt)**
 
+##### Username and Password for login.html: `admin123`
+
 > **⚠️ Important Notes for Live Access (LocalTunnel):**
 > * **First-Time Screen:** When opening the link for the first time, LocalTunnel will display a security/warning page. Simply follow the instructions on that page (such as acknowledging or copying the verification token/IP) to proceed to the app.
 > * **Tunnel Availability:** Because this is hosted via a local tunnel, it may occasionally close due to internet connection breaks (resulting in a `503` error). If the link is down or unavailable, please contact us on `0344-8143397` so we can restart the tunnel immediately!
