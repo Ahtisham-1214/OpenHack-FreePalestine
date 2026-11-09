@@ -125,7 +125,7 @@ class="mt-8 w-full py-3.5 px-6 bg-[#082d6b] hover:bg-[#061f4a] text-white font-m
       jobs.forEach(job => {
         const option = document.createElement("option");
         option.value = job.job;
-        option.textContent = `${job.job} (~${job.time} mins)`;
+        option.textContent = `${job.job} - ${job.time} mins`;
         selectElement.appendChild(option);
       });
 
