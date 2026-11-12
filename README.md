@@ -7,7 +7,7 @@ An Aeal-time token and queue optimization platform built for the **SC-03 Public 
 ## 🌐 Live Application Demo
 
 You can test the live deployment directly in your browser:
-🔗 **[https://free-palestine-openhack.loca.lt](https://free-palestine-openhack.loca.lt)**
+🔗 **[https://yehackathon-freepalestine.loca.lt](https://yehackathon-freepalestine.loca.lt)**
 
 ##### Username and Password for login.html: `admin123`
 
