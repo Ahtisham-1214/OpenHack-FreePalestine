@@ -31,7 +31,7 @@ public class BankQueueService {
     }
 
     public ServiceResponseDto requestService(ServiceRequestDto request) {
-        Job job = jobRepository.findByJob(request.getService())
+        Job job = jobRepository.findFirstByJobOrderByIdAsc(request.getService())
                 .orElseThrow(() -> new IllegalArgumentException("Selected Service does not exist"));
 
         BankQueue queueItem = myMapper.toBankQueue(request);
@@ -63,6 +63,6 @@ public class BankQueueService {
         }));
 
         pq.addAll(waitingTokens);
-        return pq.stream().toList();
+        return pq.stream().sorted(pq.comparator()).toList();
     }
 }

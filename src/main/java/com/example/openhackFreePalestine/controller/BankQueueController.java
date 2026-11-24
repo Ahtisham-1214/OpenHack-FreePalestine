@@ -82,6 +82,26 @@ public class BankQueueController {
         ));
     }
 
+    @GetMapping("/live-queue")
+    public ResponseEntity<?> getLiveQueue() {
+        List<BankQueue> waiting = bankQueueService.getOptimizedQueue();
+        List<BankQueue> serving = bankQueueRepository.findByStatus(TokenStatus.SERVING);
+
+        List<Map<String, Object>> tokens = java.util.stream.Stream
+                .concat(serving.stream(), waiting.stream())
+                .map(token -> Map.<String, Object>of(
+                        "tokenId", token.getId(),
+                        "service", token.getService(),
+                        "status", token.getStatus().name()))
+                .toList();
+
+        return ResponseEntity.ok(Map.of(
+                "waitingCount", waiting.size(),
+                "servingCount", serving.size(),
+                "tokens", tokens
+        ));
+    }
+
 
     @GetMapping("/status/{tokenId}")
     public ResponseEntity<?> getTokenStatus(@PathVariable Long tokenId) {
