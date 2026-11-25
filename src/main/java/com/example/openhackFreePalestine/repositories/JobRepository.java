@@ -11,5 +11,5 @@ public interface JobRepository extends JpaRepository<Job, Long> {
 
     boolean existsByJob(String job);
 
-    Optional<Job> findByJob(String job);
+    Optional<Job> findFirstByJobOrderByIdAsc(String job);
 }

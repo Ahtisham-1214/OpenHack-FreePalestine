@@ -22,6 +22,10 @@ public class JobService {
     }
 
     public JobResponseDto postJob(JobRequestDto jobRequestDto) {
+        if (jobRepository.existsByJob(jobRequestDto.getJob())) {
+            throw new IllegalArgumentException("A service with this name already exists.");
+        }
+
         return myMapper.toJobAndTimeResponseDto(
                 jobRepository.save(
                         myMapper.toJobAndTime(jobRequestDto)));
